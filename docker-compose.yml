@@ -1,0 +1,25 @@
+version: "3.2"
+
+services:
+  web:
+    image: anoop/counter-demo
+    deploy:
+      replicas: 10
+    ports:
+      - "8080"
+    networks:
+      - dubdub
+
+  db:
+    image: redis
+    volumes:
+      - data:/data
+    networks:
+      dubdub:
+
+networks:
+  dubdub:
+    driver: overlay
+
+volumes:
+  data:

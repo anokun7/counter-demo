@@ -1,2 +1,2 @@
 # counter-demo
-An user simple demo app to showcase swarm mode and image building capabilities within docker.
+A very simple Go-Redis app to demo discovery of multiple services.
