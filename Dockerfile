@@ -1,5 +1,5 @@
 FROM golang:alpine
-COPY demo.go /go/
+COPY src/demo.go /go/
 RUN apk update && apk add git && \
 # need git installed to run 'go get' on github
     go get github.com/garyburd/redigo/redis && \
