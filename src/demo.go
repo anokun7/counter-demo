@@ -26,6 +26,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
       fmt.Fprintf(w, "<td style='border: 1px solid green; text-align: center;'>%d</td></tr>",value)
     }
     fmt.Fprintf(w, "</table>")
+    env := os.Getenv("ENVIRONMENT")
+    fmt.Fprintf(w, "<div style='font: bold 36px/1.5 Arial, sans-serif; float: left'>%s</div>", env)
 //  time.Sleep(300 * time.Millisecond)
 }
 

@@ -3,6 +3,8 @@ version: "3.2"
 services:
   web:
     image: anoop/counter-demo:${version:-latest}
+    environment:
+      ENVIRONMENT: ${env}
     deploy:
       replicas: 10
     ports:
