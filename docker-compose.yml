@@ -4,7 +4,7 @@ services:
   web:
     image: anoop/counter-demo:${version:-latest}
     environment:
-      ENVIRONMENT: ${env}
+      ENVIRONMENT: ${env:-PRODUCTION}
     deploy:
       replicas: 10
     ports:
@@ -13,7 +13,7 @@ services:
       - dubdub
 
   db:
-    image: redis
+    image: redis:${redis-version:-latest}
     volumes:
       - data:/data
     networks:
