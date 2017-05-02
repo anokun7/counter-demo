@@ -1,0 +1,15 @@
+<html>
+  <body>
+    <p>Hi there, from <b>{{ .CurrentHost }}</b>!
+    <hr/>
+    <table style='width: 10em; border-collapse: collapse;'><tr><th style='border: 2px dotted green;'>Container</th><th style='padding: 5px; border: 2px dotted green;'>#</th></tr>
+      {{ range .Hits }}
+      <tr>
+        <td style='border: 1px solid green;'>{{ .Host }}</td>
+        <td style='border: 1px solid green; text-align: center;'>{{ .Count }}</td>
+      </tr>
+      {{ end }}
+    </table>
+    <div style='color: lightgray; font: bold 96px/1.5 Arial, sans-serif; text-align: center; vertical-align: middle; line-height: 100%; float: right; width:85%'>{{ .Env }}</div>
+  </body>
+</html>
