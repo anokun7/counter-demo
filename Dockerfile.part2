@@ -1,4 +1,5 @@
 FROM scratch
 COPY app /app
+COPY tmpl/demo.html /tmpl/demo.html
 EXPOSE 8080
 CMD ["/app"]
