@@ -2,7 +2,11 @@
   <body>
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     <hr/>
-    <table style='width: 10em; border-collapse: collapse;'><tr><th style='border: 2px dotted green;'>Container</th><th style='padding: 5px; border: 2px dotted green;'>#</th></tr>
+    <table style='width: 10em; border-collapse: collapse;'>
+      <tr>
+        <th style='border: 2px dotted green;'>Container</th>
+        <th style='padding: 5px; border: 2px dotted green;'>#</th>
+      </tr>
       {{ range .Hits }}
       <tr>
         <td style='border: 1px solid green;'>{{ .Host }}</td>
