@@ -1,45 +1,48 @@
 #!/bin/bash
-echo "-------------------- Starting Docker build --------------------"
-echo "==================== Building ONBUILD version  ===================="
+printf "%100s\n" "------------------------ Starting Docker build --------------------"
+printf "%100s\n" "==================== Building ONBUILD version  ===================="
 docker build -t anoop/counter-demo:onbuild -f ../src/Dockerfile ../src
-echo "==================== Building MANUAL Part 1 of 2 version  ===================="
+printf "%100s\n" "========== Building MANUAL Part 1 of 2 version  ==================="
 docker build -t anoop/counter-demo:v1 -f ../Dockerfile.part1 ..
-echo "==================== Copying binaries from temp container of Part 1 ===================="
+printf "%100s\n" "=== Copying binaries from temp container of Part 1 ================"
 docker run -d anoop/counter-demo:v1 sleep 5
 docker cp $(docker ps -ql):/go/app ..
-echo "==================== Building MANUAL Part 2 of 2 version  ===================="
+printf "%100s\n" "============ Building MANUAL Part 2 of 2 version  ================="
 docker build -t anoop/counter-demo:v2 -f ../Dockerfile.part2 ..
-echo "==================== Cleaning up ===================="
+printf "%100s\n" "======================= Cleaning up ==============================="
 \rm ../app
-echo "==================== Building MULTI-STAGE version  ===================="
+printf "%100s\n" "==================== Building MULTI-STAGE version  ================"
 docker build -t anoop/counter-demo:latest -f ../Dockerfile ..
-echo "-------------------- Finished Docker build --------------------"
-echo ""
-echo ""
-echo "==================== Pushing all images ===================="
+printf "%100s\n" "---------------------------- Finished Docker build -----------------"
+printf "%100s\n" ""
+printf "%100s\n" ""
+printf "%100s\n" "========================== Pushing all images ======================"
 docker push ${dockerid:-anoop}/counter-demo:onbuild
 docker push ${dockerid:-anoop}/counter-demo:v1
 docker push ${dockerid:-anoop}/counter-demo:v2
 docker push ${dockerid:-anoop}/counter-demo
-echo "==================== Finished pushing all images ===================="
-echo "==================== Deploying STACKS ===================="
+printf "%100s\n" "==================== Finished pushing all images ===================="
+printf "%100s\n\n" "======================== Deploying STACKS ==========================="
+printf "%100s\n" "==================================================== Onbuild Stack =="
 env=onbuild-dev version=onbuild docker stack deploy -c ../docker-compose.yml OnBuild
+printf "%100s\n" "========================================= QA Part 1 & Part 2 STACKS=="
 env=v1-qa version=v1 docker stack deploy -c ../docker-compose.yml QA1
 env=v2-qa version=v2 docker stack deploy -c ../docker-compose.yml QA2
+printf "%100s\n" "================================================== PRODUCTION STACK ="
 docker stack deploy -c ../docker-compose.yml Prod
 
-echo ""
-echo "==================== Running Tests & generating stats ===================="
+printf "%100s\n" ""
+printf "%100s\n" "================= Running Tests & generating stats ===================="
+printf "%100s\n" "================= Services coming up, waiting .... ===================="
 for e in OnBuild QA1 QA2 Prod;
 do
-  for i in {0..99};
+  for i in {0..49};
   do
     until $(curl --output /dev/null --silent --head --fail $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web)); 
     do
-      printf '.'
-      sleep 5
+      printf '.'; sleep 5
     done
-    curl -s -o /dev/null $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web); echo -n "=_";
+    curl -s -o /dev/null $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web); printf "%2s" "=_"
   done;
-  echo "";
+  echo ""
 done
