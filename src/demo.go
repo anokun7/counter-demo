@@ -2,10 +2,10 @@ package main
 
 import (
   "github.com/garyburd/redigo/redis"
-  "log"
-  "os"
-  "net/http"
   "html/template"
+  "log"
+  "net/http"
+  "os"
 )
 // data structure to hold the hit counts per host
 type Hit struct {
@@ -30,7 +30,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
   // INCR the value corresponding to the host key
   c.Do("INCR", host)
 
-  // Generate stats for all other hits/hosts
+  // Generate stats for all other hits per hosts
   var hits []Hit
   keys, _ := redis.Strings(c.Do("KEYS", "*"))
   for _, key := range keys {
