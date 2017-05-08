@@ -1,2 +1,5 @@
+#!/bin/bash
 docker stack rm OnBuild QA1 QA2 Prod
-docker system prune -af
+echo -n "Waiting.."
+for i in {0..9}; do sleep 1 ; echo -n "." ; done
+docker volume rm OnBuild_data QA1_data QA2_data Prod_data
