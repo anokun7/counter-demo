@@ -21,19 +21,19 @@ docker push ${dockerid:-anoop}/counter-demo:onbuild
 docker push ${dockerid:-anoop}/counter-demo:v1
 docker push ${dockerid:-anoop}/counter-demo:v2
 docker push ${dockerid:-anoop}/counter-demo
-printf "%100s\n" "==================== Finished pushing all images ===================="
-printf "%100s\n\n" "======================== Deploying STACKS ==========================="
+printf "%100s\n\n" "==================== Finished pushing all images ===================="
+printf "%100s\n" "============================================ Deploying STACKS ======="
 printf "%100s\n" "==================================================== Onbuild Stack =="
 env=onbuild-dev version=onbuild docker stack deploy -c ../docker-compose.yml OnBuild
 printf "%100s\n" "========================================= QA Part 1 & Part 2 STACKS=="
 env=v1-qa version=v1 docker stack deploy -c ../docker-compose.yml QA1
 env=v2-qa version=v2 docker stack deploy -c ../docker-compose.yml QA2
-printf "%100s\n" "================================================== PRODUCTION STACK ="
+printf "%100s\n" "================================================= PRODUCTION STACK =="
 docker stack deploy -c ../docker-compose.yml Prod
 
 printf "%100s\n" ""
 printf "%100s\n" "================= Running Tests & generating stats ===================="
-printf "%100s\n" "================= Services coming up, waiting .... ===================="
+printf "%100s\n" "=================================== Services coming up, waiting .... =="
 for e in OnBuild QA1 QA2 Prod;
 do
   for i in {0..49};

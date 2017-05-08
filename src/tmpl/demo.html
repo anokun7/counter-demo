@@ -2,7 +2,7 @@
   <body>
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     <hr/>
-    <table style='width: 10em; border-collapse: collapse;'>
+    <table style='width: 10em; border-collapse: collapse; float: left;'>
       <tr>
         <th style='border: 2px dotted green;'>Container</th>
         <th style='padding: 5px; border: 2px dotted green;'>#</th>
@@ -14,6 +14,6 @@
       </tr>
       {{ end }}
     </table>
-    <div style='color: lightgray; font: bold 96px/1.5 Arial, sans-serif; text-align: center; vertical-align: middle; line-height: 100%; float: right; width:85%'>{{ .Env }}</div>
+    <div style='color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%;'>{{ .Env }}</div>
   </body>
 </html>
