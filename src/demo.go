@@ -4,6 +4,7 @@ import (
   "github.com/garyburd/redigo/redis"
   "html/template"
   "log"
+  "math/rand"
   "net/http"
   "os"
 )
@@ -18,6 +19,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
   host := os.Getenv("HOSTNAME")
   // A pseudo variable to denote env specific variations
   env := os.Getenv("ENVIRONMENT")
+  rotate := rand.Intn(180)
 
   // connect to redis. The redis db host should be reachable as "db"
   // Using "db" as network alias & default port
@@ -42,9 +44,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
   // Using an anonymous struct, only needed to pass to the template
   data := struct {
     CurrentHost, Env string
+    Rotate int
     Hits []Hit
   }{
-    host, env, hits,
+    host, env, rotate, hits,
   }
 
   // Template stuff, with error handling (critical for troubleshooting)

@@ -1,8 +1,20 @@
 <html>
+  <head>
+    <style> 
+img {
+  transform: rotate({{ .Rotate }}deg); display: block; margin: 0 10%;
+}
+table {
+  width: 10em; border-collapse: collapse; float: left;
+}
+.env {
+  color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%;
+}
+</style>
   <body>
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     <hr/>
-    <table style='width: 10em; border-collapse: collapse; float: left;'>
+    <table>
       <tr>
         <th style='border: 2px dotted green;'>Container</th>
         <th style='padding: 5px; border: 2px dotted green;'>#</th>
@@ -14,6 +26,9 @@
       </tr>
       {{ end }}
     </table>
-    <div style='color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%;'>{{ .Env }}</div>
+    <div class='env'>
+      <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>
+      {{ .Env }}
+    </div>
   </body>
 </html>
