@@ -46,3 +46,7 @@ do
   done;
   echo ""
 done
+for e in OnBuild QA1 QA2 Prod;
+do
+  echo "$e URL: http://$(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web)";
+done
