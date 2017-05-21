@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   web:
-    image: anoop/counter-demo:${version:-latest}
+    image: ${dockerid:-anoop}/counter-demo:${version:-latest}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
     deploy:

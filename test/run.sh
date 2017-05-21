@@ -1,18 +1,18 @@
 #!/bin/bash
 printf "%100s\n" "------------------------ Starting Docker build --------------------"
 printf "%100s\n" "==================== Building ONBUILD version  ===================="
-docker build -t anoop/counter-demo:onbuild -f ../src/Dockerfile ../src
+docker build -t ${dockerid:-anoop}/counter-demo:onbuild -f ../src/Dockerfile ../src
 printf "%100s\n" "========== Building MANUAL Part 1 of 2 version  ==================="
-docker build -t anoop/counter-demo:v1 -f ../Dockerfile.part1 ..
+docker build -t ${dockerid:-anoop}/counter-demo:v1 -f ../Dockerfile.part1 ..
 printf "%100s\n" "=== Copying binaries from temp container of Part 1 ================"
-docker run -d anoop/counter-demo:v1 sleep 5
+docker run -d ${dockerid:-anoop}/counter-demo:v1 sleep 5
 docker cp $(docker ps -ql):/go/app ..
 printf "%100s\n" "============ Building MANUAL Part 2 of 2 version  ================="
-docker build -t anoop/counter-demo:v2 -f ../Dockerfile.part2 ..
+docker build -t ${dockerid:-anoop}/counter-demo:v2 -f ../Dockerfile.part2 ..
 printf "%100s\n" "======================= Cleaning up ==============================="
 \rm ../app
 printf "%100s\n" "==================== Building MULTI-STAGE version  ================"
-docker build -t anoop/counter-demo:latest -f ../Dockerfile ..
+docker build -t ${dockerid:-anoop}/counter-demo:latest -f ../Dockerfile ..
 printf "%100s\n" "---------------------------- Finished Docker build -----------------"
 printf "%100s\n" ""
 printf "%100s\n" ""
