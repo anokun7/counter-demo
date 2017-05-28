@@ -19,10 +19,19 @@ The stats as to which host / container was accessed how many times based on the 
  Below are the steps to build the docker image for each flavor of the application. The only component we will need to build is for the web server / front end application. The back end which is on redis will simply use the official docker image from the store. Details on that are available at https://store.docker.com/images/redis?tab=description.
 
 ## Pre-requisites
+- Have a dockerid created and ready to use. You can create one for free at https://hub.docker.com.
 - You should have docker installed (of course). You can use Docker for Mac (D4M) or Windows or you can use a Linux machine that has docker. If you use Windows, please note you will not be able to run some of the scripts in the test folder.
 - You should have a swarm cluster available. This should be the newer swarm mode (not classic swarm), using `docker swarm init`. It does not matter how many nodes are members of the cluster, you can setup a swarm mode cluster using a single node using D4M or D4W.
 
 ## Steps to build the application (front end component):
+> To run through all the different steps including building images in different ways, starting each within a separate application and generating test data, just run the script at `test/run.sh` as 
+```
+dockerid=<your dockerid> test/run.sh
+```
+> To cleanup, please run `test/teardown.sh`. (You may have to run it again to ensure volumes and networks are cleaned up properly)
+
+### Under the hood
+Image building happens in a few different ways to demonstrate the evolution of building images to make them more efficient in terms of size. Having a small image ensures that you have elminiated technical debt, improved security by not including unnecessary files and in most cases improved the performance of not only deploying the application but also in the running of the application. Below is a brief description of the different ways this project builds the image:
  - The old way, very simple but not efficient in terms of resultant image size:
 
  - The old way, improved - uses a two step process. The first step is to build just like before, but there is a subsequent step which extracts only the useful bits from the first image and constructs a new minimal image from those bits.
