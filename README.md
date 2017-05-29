@@ -102,9 +102,13 @@ dockerid=<your dockerid> docker stack deploy -c docker-compose.yml Prod
 ```
 
 Now you should be able to access each of the individual applications at:
+
 [http://localhost:30000](http://localhost:30000)
+
 [http://localhost:30001](http://localhost:30001)
+
 [http://localhost:30002](http://localhost:30002)
+
 [http://localhost:30003](http://localhost:30003)
 
 Hit the refresh button a few times to see the counters increment as it hits different containers. You can also simulate load by using a simple one-liner like below:
@@ -120,7 +124,7 @@ docker service scale QA2_web=17
 docker service scale Prod_web=22
 ```
 
-We can refresh the browser (or use `curl`) just as before to see the new containers being hit.
+We can refresh the browser (or use `curl`) just as before to see the new containers being hit & their counters getting incremented.
 
 #### The output on the browser should be similar to this:
 ![Onbuild](https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/onbuild.png)
