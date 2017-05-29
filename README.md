@@ -102,10 +102,10 @@ dockerid=<your dockerid> docker stack deploy -c docker-compose.yml Prod
 ```
 
 Now you should be able to access each of the individual applications at:
-http://localhost:30000
-http://localhost:30001
-http://localhost:30002
-http://localhost:30003
+(http://localhost:30000)[http://localhost:30000]
+(http://localhost:30001)[http://localhost:30001]
+(http://localhost:30002)[http://localhost:30002]
+(http://localhost:30003)[http://localhost:30003]
 
 Hit the refresh button a few times to see the counters increment as it hits different containers. You can also simulate load by using a simple one-liner like below:
 ```
