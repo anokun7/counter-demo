@@ -1,5 +1,5 @@
 # Hit Counter Demo - Evolution of the docker build
-A very simple Go-Redis app to demo discovery of multiple services. If interested in a similar java / spring based app, please check out [Docker with Spring Boot](https://github.com/anokun7/docker-springframework).
+A very simple Go-Redis app to demonstrate efficient image building processes & discovery of multiple services. If interested in a similar java / spring based app, please check out [Docker with Spring Boot](https://github.com/anokun7/docker-springframework).
 
 If you want to skip everything and just run this app and look at the results, follow the steps below:
 ```
@@ -111,6 +111,16 @@ Hit the refresh button a few times to see the counters increment as it hits diff
 ```
 for i in {0..99} ; do curl <URL>; done
 ```
+
+Let's scale some of the services using the commands below:
+```
+docker service scale OnBuild_web=12
+docker service scale QA1_web=2
+docker service scale QA2_web=17
+docker service scale Prod_web=22
+```
+
+We can refresh the browser (or use `curl`) just as before to see the new containers being hit.
 
 #### The output on the browser should be similar to this:
 ![Onbuild](https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/onbuild.png)
