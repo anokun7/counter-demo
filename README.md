@@ -1,5 +1,5 @@
-# counter-demo
-A very simple Go-Redis app to demo discovery of multiple services.
+# counter-demo - Evolution of the docker build
+A very simple Go-Redis app to demo discovery of multiple services. If interested in a similar java / spring based app, please check out https://github.com/anokun7/docker-springframework.
 
 If you want to skip everything and just run this app and look at the results, follow the steps below:
 ```
@@ -111,7 +111,7 @@ Hit the refresh button a few times to see the counters increment as it hits diff
 for i in {0..99} ; do curl <URL>; done
 ```
 
-The output on the browser should be similar to this:
+#### The output on the browser should be similar to this:
 ![Onbuild](https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/onbuild.png)
 ![QA - manual 2-step build](https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/qa.png)
 ![Production - multistage](https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/prod.png)
