@@ -112,4 +112,9 @@ for i in {0..99} ; do curl <URL>; done
 ```
 
 The output on the browser should be similar to this:
-
+![Onbuild]
+(https://github.com/anokun7/counter-demo/screenshots/onbuild.png)
+![QA - manual 2-step build]
+(https://github.com/anokun7/counter-demo/screenshots/qa.png)
+![Productio - multistage]
+(https://github.com/anokun7/counter-demo/screenshots/prod.png)
