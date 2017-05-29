@@ -1,5 +1,5 @@
-# counter-demo - Evolution of the docker build
-A very simple Go-Redis app to demo discovery of multiple services. If interested in a similar java / spring based app, please check out https://github.com/anokun7/docker-springframework.
+# Hit Counter Demo - Evolution of the docker build
+A very simple Go-Redis app to demo discovery of multiple services. If interested in a similar java / spring based app, please check out [Docker with Spring Boot](https://github.com/anokun7/docker-springframework).
 
 If you want to skip everything and just run this app and look at the results, follow the steps below:
 ```
@@ -32,11 +32,12 @@ The stats as to which host / container was accessed how many times based on the 
 - You should have a swarm cluster available. This should be the newer swarm mode (not classic swarm), using `docker swarm init`. It does not matter how many nodes are members of the cluster, you can setup a swarm mode cluster using a single node using D4M or D4W.
 
 ## Steps to build the application (front end component):
-> To run through all the different steps including building images in different ways, starting each within a separate application and generating test data, just run the script at `test/run.sh` as 
+> To run through all the different scenarios in this repository, including building images in different ways, starting a separate application stack that uses each image independently and generating test data, just run the script at `test/run.sh` as 
 ```
-dockerid=<your dockerid> test/run.sh
+cd test
+dockerid=<your dockerid> ./run.sh
 ```
-> To cleanup, please run `test/teardown.sh`. (You may have to run it again to ensure volumes and networks are cleaned up properly)
+> To cleanup, please run `./teardown.sh`. (You may have to run it again to ensure volumes and networks are cleaned up properly)
 
 ### Under the hood
 Image building in Docker can be accomplished in a few different ways to demonstrate the evolution of building images to make them more efficient in terms of size. Having a small image ensures that you have elminiated technical debt, improved security by not including unnecessary files and in most cases improved the performance of not only deploying the application but also in the running of the application. Below is a brief description of the different ways this project builds the image:
