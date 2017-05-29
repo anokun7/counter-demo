@@ -7,7 +7,7 @@ git clone https://github.com/anokun7/counter-demo.git
 cd counter-demo/test
 dockerid=<your dockerid> ./run.sh
 ```
-If anything failes, please check the prerequisites below. Else you should be able to hit the URLs specified at the end of the out of `run.sh` above.
+If anything fails, please check the prerequisites below. Else you should be able to hit the URLs specified at the end of the out of `run.sh` above.
 
 # What you will learn in this demo
 * How `docker build` works.
@@ -105,4 +105,11 @@ http://localhost:30000
 http://localhost:30001
 http://localhost:30002
 http://localhost:30003
+
+Hit the refresh button a few times to see the counters increment as it hits different containers. You can also simulate load by using a simple one-liner like below:
+```
+for i in {0..99} ; do curl <URL>; done
+```
+
+The output on the browser should be similar to this:
 
