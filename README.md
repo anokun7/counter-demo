@@ -113,8 +113,8 @@ for i in {0..99} ; do curl <URL>; done
 
 The output on the browser should be similar to this:
 ![Onbuild]
-(https://github.com/anokun7/counter-demo/blob/master/screenshots/onbuild.png)
+(https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/onbuild.png)
 ![QA - manual 2-step build]
-(https://github.com/anokun7/counter-demo/blob/master/screenshots/qa.png)
+(https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/qa.png)
 ![Productio - multistage]
-(https://github.com/anokun7/counter-demo/blob/master/screenshots/prod.png)
+(https://raw.githubusercontent.com/anokun7/counter-demo/master/screenshots/prod.png)
