@@ -83,22 +83,22 @@ Let's see how we can achieve both using the commands below:
 # For the OnBuild version:
 docker tag counter-demo:onbuild anoop/counter-demo:onbuild
 docker push counter-demo:onbuild
-env=onbuild-dev version=onbuild dockerid=<your dockerid> docker stack deploy -c ../docker-compose.yml OnBuild
+env=onbuild-dev version=onbuild dockerid=<your dockerid> docker stack deploy -c docker-compose.yml OnBuild
 
 # For part 1 in the 2-step process:
 docker tag counter-demo:v1 anoop/counter-demo:v1
 docker push counter-demo:v1
-env=v1-qa version=v1 dockerid=<your dockerid> docker stack deploy -c ../docker-compose.yml QA1
+env=v1-qa version=v1 dockerid=<your dockerid> docker stack deploy -c docker-compose.yml QA1
 
 # For part 2 in the 2-step process:
 docker tag counter-demo:v2 anoop/counter-demo:v2
 docker push counter-demo:v2
-env=v2-qa version=v2 dockerid=<your dockerid> docker stack deploy -c ../docker-compose.yml QA2
+env=v2-qa version=v2 dockerid=<your dockerid> docker stack deploy -c docker-compose.yml QA2
 
 # For the multi-stage version
 docker tag counter-demo:latest anoop/counter-demo:latest
 docker push counter-demo:latest
-dockerid=<your dockerid> docker stack deploy -c ../docker-compose.yml Prod
+dockerid=<your dockerid> docker stack deploy -c docker-compose.yml Prod
 ```
 
 Now you should be able to access each of the individual applications at:
