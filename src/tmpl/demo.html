@@ -1,22 +1,13 @@
 <html>
   <head>
     <style> 
-img {
-  transform: rotate({{ .Rotate }}deg); display: block; margin: 0 10%;
-}
-table {
-  width: 10em; border-collapse: collapse; float: left;
-}
-.env {
-  color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%;
-}
-.name {
-   border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0;
-}
-.count {
-   border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em; color: green;
-}
-</style>
+img { transform: rotate({{ .Rotate }}deg); display: block; margin: 0 10%; }
+table { width: 10em; border-collapse: collapse; float: left; }
+.env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%; }
+.name { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0; }
+.count { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em; color: green; }
+    </style>
+  <head>
   <body>
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     <hr/>
