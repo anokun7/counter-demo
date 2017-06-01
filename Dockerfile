@@ -9,6 +9,6 @@ RUN apk update && apk add git && \
 
 FROM scratch
 COPY --from=builder /go/app /app
-COPY src/tmpl/demo.html /go/tmpl/demo.html
+COPY src/tmpl/demo.html /tmpl/demo.html
 EXPOSE 8080
 CMD ["/app"]
