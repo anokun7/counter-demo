@@ -1,22 +1,25 @@
 #!/bin/bash
 printf "%100s\n" "------------------------ Starting Docker build --------------------"
-printf "%100s\n" "==================== Building ONBUILD version  ===================="
+printf "%100s\n" "==================== Building caddy (web) ========================="
+docker build -t ${dockerid:-anoop}/caddy:latest -f ../caddy/Dockerfile ../caddy
+printf "%100s\n" "==================== Building ONBUILD version of app =============="
 docker build -t ${dockerid:-anoop}/counter-demo:onbuild -f ../src/Dockerfile ../src
-printf "%100s\n" "========== Building MANUAL Part 1 of 2 version  ==================="
+printf "%100s\n" "========== Building MANUAL Part 1 of 2 version of app ============="
 docker build -t ${dockerid:-anoop}/counter-demo:v1 -f ../Dockerfile.part1 ..
 printf "%100s\n" "=== Copying binaries from temp container of Part 1 ================"
 docker run -d ${dockerid:-anoop}/counter-demo:v1 sleep 5
 docker cp $(docker ps -ql):/go/app ..
-printf "%100s\n" "============ Building MANUAL Part 2 of 2 version  ================="
+printf "%100s\n" "============ Building MANUAL Part 2 of 2 version of app ==========="
 docker build -t ${dockerid:-anoop}/counter-demo:v2 -f ../Dockerfile.part2 ..
 printf "%100s\n" "======================= Cleaning up ==============================="
 \rm ../app
-printf "%100s\n" "==================== Building MULTI-STAGE version  ================"
+printf "%100s\n" "==================== Building MULTI-STAGE version of app =========="
 docker build -t ${dockerid:-anoop}/counter-demo:latest -f ../Dockerfile ..
 printf "%100s\n" "---------------------------- Finished Docker build -----------------"
 printf "%100s\n" ""
 printf "%100s\n" ""
 printf "%100s\n" "========================== Pushing all images ======================"
+docker push ${dockerid:-anoop}/caddy
 docker push ${dockerid:-anoop}/counter-demo:onbuild
 docker push ${dockerid:-anoop}/counter-demo:v1
 docker push ${dockerid:-anoop}/counter-demo:v2
