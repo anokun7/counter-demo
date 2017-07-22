@@ -1,31 +1,42 @@
-version: "3.1"
+version: "3.2"
 
 services:
   web:
-    image: ${dockerid:-anoop}/counter-demo:${version:-latest}
-    environment:
-      ENVIRONMENT: ${env:-PRODUCTION}
+    image: ${dockerid:-anoop}/caddy:${version:-latest}
     deploy:
       replicas: 10
 #     labels:
 #       com.docker.ucp.mesh.http: "external_route=http://applb-qxbxiw4ztbtve.eastus.cloudapp.azure.com,internal_port=8080"
     ports:
-      - "8080"
+      - "2015"
     networks:
-      - dubdub
+      - frontend
 #     - ucp-hrm
+ 
+  app:
+    image: ${dockerid:-anoop}/counter-demo:${version:-latest}
+    environment:
+      ENVIRONMENT: ${env:-PRODUCTION}
+    deploy:
+      replicas: 10
+      endpoint_mode: dnsrr
+    networks:
+      - frontend
+      - backend
 
   db:
     image: redis:${redis-version:-latest}
     volumes:
       - data:/data
     networks:
-      dubdub:
+      backend:
 
 networks:
 # ucp-hrm:
 #   external: true
-  dubdub:
+  frontend:
+    driver: overlay
+  backend:
     driver: overlay
 
 volumes:
