@@ -6,9 +6,9 @@ services:
     environment:
       app_url: app:8080
     deploy:
-      replicas: 10
+      replicas: 4
 #     labels:
-#       com.docker.ucp.mesh.http: "external_route=http://applb-qxbxiw4ztbtve.eastus.cloudapp.azure.com,internal_port=8080"
+#       com.docker.ucp.mesh.http: "external_route=http://applb-qxbxiw4ztbtve.eastus.cloudapp.azure.com,internal_port=2015"
     ports:
       - "2015"
     networks:
