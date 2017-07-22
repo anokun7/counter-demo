@@ -1,3 +1,6 @@
 localhost:2015
-proxy / {$app_url}
+proxy / {$app_url} {
+  policy least_conn
+  except /home.html
+}
 tls off
