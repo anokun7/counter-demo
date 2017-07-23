@@ -2,7 +2,7 @@ version: "3.2"
 
 services:
   web:
-    image: ${dockerid:-anoop}/caddy:${caddy-version:-latest}
+    image: ${dockerid:-anoop}/webserver:${webserver-version:-latest}
     environment:
       app_url: app:8080
     deploy:

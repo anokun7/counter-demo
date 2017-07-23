@@ -1,8 +1,0 @@
-localhost:2015
-ext .html .htm
-templates
-proxy / {$app_url} {
-  policy round_robin
-  except /home /home.html
-}
-tls off

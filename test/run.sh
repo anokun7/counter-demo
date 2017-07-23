@@ -1,7 +1,7 @@
 #!/bin/bash
 printf "%100s\n" "------------------------ Starting Docker build --------------------"
-printf "%100s\n" "==================== Building caddy (web) ========================="
-docker build -t ${dockerid:-anoop}/caddy:latest -f ../caddy/Dockerfile ../caddy
+printf "%100s\n" "==================== Building web ========================="
+docker build -t ${dockerid:-anoop}/webserver:latest -f ../webserver/Dockerfile ../webserver
 printf "%100s\n" "==================== Building ONBUILD version of app =============="
 docker build -t ${dockerid:-anoop}/counter-demo:onbuild -f ../src/Dockerfile ../src
 printf "%100s\n" "========== Building MANUAL Part 1 of 2 version of app ============="
@@ -19,7 +19,7 @@ printf "%100s\n" "---------------------------- Finished Docker build -----------
 printf "%100s\n" ""
 printf "%100s\n" ""
 printf "%100s\n" "========================== Pushing all images ======================"
-docker push ${dockerid:-anoop}/caddy
+docker push ${dockerid:-anoop}/webserver
 docker push ${dockerid:-anoop}/counter-demo:onbuild
 docker push ${dockerid:-anoop}/counter-demo:v1
 docker push ${dockerid:-anoop}/counter-demo:v2
