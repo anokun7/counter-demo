@@ -1,6 +1,6 @@
 #!/bin/bash
 printf "%100s\n" "------------------------ Starting Docker build --------------------"
-printf "%100s\n" "==================== Building web ========================="
+printf "%100s\n" "============================ Building web ========================="
 docker build -t ${dockerid:-anoop}/webserver:latest -f ../webserver/Dockerfile ../webserver
 printf "%100s\n" "==================== Building ONBUILD version of app =============="
 docker build -t ${dockerid:-anoop}/counter-demo:onbuild -f ../src/Dockerfile ../src
@@ -37,7 +37,6 @@ docker stack deploy -c ../docker-compose.yml Prod${project}
 printf "%100s\n" ""
 printf "%100s\n" "================= Running Tests & generating stats ===================="
 printf "%100s\n" "=================================== Services coming up, waiting .... =="
-sleep 25
 for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
 do
   for i in {0..49};
@@ -48,6 +47,7 @@ do
     done
     curl -s -o /dev/null $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web); printf "%2s" "=_"
   done;
+  ab -q -S -c 10 -n 1000 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
   echo ""
 done
 for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
