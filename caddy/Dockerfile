@@ -1,4 +1,4 @@
 FROM scratch
 COPY caddy Caddyfile home.html /
-EXPOSE 8080
+EXPOSE 2015
 CMD ["/caddy"]

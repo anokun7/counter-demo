@@ -37,7 +37,7 @@ docker stack deploy -c ../docker-compose.yml Prod${project}
 printf "%100s\n" ""
 printf "%100s\n" "================= Running Tests & generating stats ===================="
 printf "%100s\n" "=================================== Services coming up, waiting .... =="
-sleep 5
+sleep 25
 for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
 do
   for i in {0..49};
