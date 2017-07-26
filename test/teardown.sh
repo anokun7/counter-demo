@@ -1,7 +1,3 @@
 #!/bin/bash
+for i in $(docker ps --filter name=_db. -q); do docker exec $i redis-cli flushall ; done
 docker stack rm OnBuild QA1 QA2 Prod
-echo -n "Waiting.."
-for i in {0..9}; do sleep 1 ; echo -n "." ; done
-docker ps
-docker volume rm OnBuild_data QA1_data QA2_data Prod_data
-docker ps

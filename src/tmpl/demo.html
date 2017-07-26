@@ -1,9 +1,10 @@
 <html>
   <head>
     <style> 
+.cover { max-width: 66% }
 img { transform: rotate({{ .Rotate }}deg); display: block; margin: 0 10%; }
 table { width: 10em; border-collapse: collapse; float: left; }
-.env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; padding-right: 35%; width: 45%; }
+.env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; width: 45%; display: inline-block; white-space: nowrap; text-shadow: 2px 2px #FFFFFF; }
 .name { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0; }
 .count { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em; color: green; }
     </style>
@@ -11,21 +12,23 @@ table { width: 10em; border-collapse: collapse; float: left; }
   <body>
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!</p>
     <hr/>
-    <table>
-      <tr>
-        <th style='border: 2px dotted green;'>Container</th>
-        <th style='padding: 5px; border: 2px dotted green;'>#</th>
-      </tr>
-      {{ range .Hits }}
-      <tr>
-        <td class='name'>{{ .Host }}</td>
-        <td class='count'>{{ .Count }}</td>
-      </tr>
-      {{ end }}
-    </table>
-    <div class='env'>
-      <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>
-      {{ .Env }}
+    <div class='cover'>
+      <table>
+        <tr>
+          <th style='border: 2px dotted green;'>Container</th>
+          <th style='padding: 5px; border: 2px dotted green;'>#</th>
+        </tr>
+        {{ range .Hits }}
+        <tr>
+          <td class='name'>{{ .Host }}</td>
+          <td class='count'>{{ .Count }}</td>
+        </tr>
+        {{ end }}
+      </table>
+      <div class='env'>
+        <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>
+        {{ .Env }}
+      </div>
     </div>
   </body>
 </html>

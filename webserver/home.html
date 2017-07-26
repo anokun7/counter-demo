@@ -1,1 +1,27 @@
-<h1>Hello World</h1>
+<html>
+  <head>
+    <style>
+    html, body { height: 100%; padding: 0; margin: 0; }
+    div { width: 50%; height: 50%; float: left; }
+    #div1 { background: #DDD; }
+    #div2 { background: #AAA; }
+    #div3 { background: #888; }
+    #div4 { background: #CCC; }
+    object { max-width: 100%; max-height: 100%; width: 100%; height: 100% }
+    </style>
+  </head>
+  <body>
+    <div id="div1">
+      <object type="text/html" data="http://localhost:30000/"></object>
+    </div>
+    <div id="div2">
+      <object type="text/html" data="http://localhost:30001/"></object>
+    </div>
+    <div id="div3">
+      <object type="text/html" data="http://localhost:30002/"></object>
+    </div>
+    <div id="div4">
+      <object type="text/html" data="http://localhost:30003/"></object>
+    </div>
+  </body>
+</html>
