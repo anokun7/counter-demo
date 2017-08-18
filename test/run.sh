@@ -47,7 +47,7 @@ do
     done
     curl -s -o /dev/null $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web); printf "%2s" "=_"
   done;
-  ab -q -S -c 10 -n 1000 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
+  ab -q -r -S -c 10 -n 1000 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
   echo ""
 done
 for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
