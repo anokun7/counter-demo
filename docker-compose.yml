@@ -6,21 +6,22 @@ services:
     environment:
       app_url: app:8080
     deploy:
-      replicas: 10
+      replicas: 1
       labels:
         com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
     ports:
       - "2015"
     networks:
       - frontend
-      - ucp-hrm
+#     - ucp-hrm
  
   app:
     image: ${dockerid:-anoop}/counter-demo:${version:-latest}
+#   hostname: ${stackname:-app}-{{.Task.Slot}}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
     deploy:
-      replicas: 10
+      replicas: 1
       endpoint_mode: dnsrr
     networks:
       - frontend
@@ -34,8 +35,8 @@ services:
       backend:
 
 networks:
-  ucp-hrm:
-    external: true
+# ucp-hrm:
+#   external: true
   frontend:
     driver: overlay
   backend:
