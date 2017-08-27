@@ -33,7 +33,11 @@ env=v1-qa version=v1 docker stack deploy -c ../docker-compose.yml QA1${project}
 env=v2-qa version=v2 docker stack deploy -c ../docker-compose.yml QA2${project}
 printf "%100s\n" "================================================= PRODUCTION STACK =="
 docker stack deploy -c ../docker-compose.yml Prod${project}
-
+printf "%100s\n" "=============================================== APPLICATION URLs...=="
+for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
+do
+  echo "$e URL: http://$(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web)";
+done
 printf "%100s\n" ""
 printf "%100s\n" "================= Running Tests & generating stats ===================="
 printf "%100s\n" "=================================== Services coming up, waiting .... =="
@@ -49,8 +53,4 @@ do
   done;
   ab -q -r -S -c 10 -n 10 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
   echo ""
-done
-for e in OnBuild${project} QA1${project} QA2${project} Prod${project}
-do
-  echo "$e URL: http://$(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web)";
 done

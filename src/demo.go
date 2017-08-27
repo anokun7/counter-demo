@@ -17,6 +17,8 @@ type Hit struct {
 // global string to hold container's hostname
 var host string
 
+var total int
+
 // To sort the hits slice by hostnames
 type ByHost []Hit
 func (h ByHost) Len() int           { return len(h) }
@@ -40,10 +42,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
     // INCR the value corresponding to the host key
     c.Do("INCR", host)
   }
-  stats(w)
+  stats(w, "incr")
 }
 
-func stats(w http.ResponseWriter) {
+func stats(w http.ResponseWriter, context string) {
   // A pseudo variable to denote env specific variations
   env := os.Getenv("ENVIRONMENT")
   rotate := rand.Intn(180)
@@ -59,10 +61,12 @@ func stats(w http.ResponseWriter) {
   // Generate stats for all other hits per hosts
   var hits []Hit
   keys, _ := redis.Strings(c.Do("KEYS", "*"))
+  total = 0
   for _, key := range keys {
     value, _ := redis.Int(c.Do("GET", key))
     hit := Hit{key, value}
     hits = append(hits, hit)
+    total = total + value
   }
 
   // Sort the container hostnames so it looks nicer and consistent
@@ -73,8 +77,10 @@ func stats(w http.ResponseWriter) {
     CurrentHost, Env string
     Rotate int
     Hits []Hit
+    Context string
+    Total int
   } {
-    host, env, rotate, hits,
+    host, env, rotate, hits, context, total,
   }
 
   // Template stuff, with error handling (critical for troubleshooting)
@@ -94,7 +100,7 @@ func stats(w http.ResponseWriter) {
 func viewer(w http.ResponseWriter, r *http.Request) {
   if r.URL.Path == "/stats" {
 //  log.Println("Viewing stats....")
-    stats(w)
+    stats(w, "viewer")
   }
 }
 

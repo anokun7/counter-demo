@@ -24,6 +24,12 @@ table { width: 10em; border-collapse: collapse; float: left; }
           <td class='count'>{{ .Count }}</td>
         </tr>
         {{ end }}
+        {{if eq .Context "viewer"}}
+        <tr>
+          <th class='name'><strong>Total</strong></th>
+          <th class='count'><strong>{{ .Total }}</strong></th>
+        </tr>
+        {{ end }}
       </table>
       <div class='env'>
         <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>

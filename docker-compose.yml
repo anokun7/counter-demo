@@ -7,8 +7,8 @@ services:
       app_url: app:8080
     deploy:
       replicas: 1
-      labels:
-        com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
+#     labels:
+#       com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
     ports:
       - "2015"
     networks:
