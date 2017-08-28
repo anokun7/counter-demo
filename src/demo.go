@@ -17,7 +17,6 @@ type Hit struct {
 // global string to hold container's hostname
 var host string
 
-var total int
 
 // To sort the hits slice by hostnames
 type ByHost []Hit
@@ -61,7 +60,8 @@ func stats(w http.ResponseWriter, context string) {
   // Generate stats for all other hits per hosts
   var hits []Hit
   keys, _ := redis.Strings(c.Do("KEYS", "*"))
-  total = 0
+  // The total number of hit for any environment
+  total := 0
   for _, key := range keys {
     value, _ := redis.Int(c.Do("GET", key))
     hit := Hit{key, value}

@@ -6,7 +6,7 @@ services:
     environment:
       app_url: app:8080
     deploy:
-      replicas: 1
+      replicas: 5
 #     labels:
 #       com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
     ports:
@@ -21,7 +21,7 @@ services:
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
     deploy:
-      replicas: 1
+      replicas: 10
       endpoint_mode: dnsrr
     networks:
       - frontend
