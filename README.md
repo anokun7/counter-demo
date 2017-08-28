@@ -1,11 +1,10 @@
 # Hit Counter Demo - Evolution of the docker build
-A very simple Go-Redis app to demonstrate efficient image building processes & discovery of multiple services. If interested in a similar java / spring based app, please check out [Docker with Spring Boot](https://github.com/anokun7/docker-springframework).
-
-If you want to skip everything and just run this app and look at the results, follow the steps below:
-
 [![Try in PWD](https://cdn.rawgit.com/play-with-docker/stacks/cff22438/assets/images/button.png)](http://play-with-docker.com?stack=https://raw.githubusercontent.com/anokun7/counter-demo/master/docker-compose.yml)
 
-OR, if you want to run this app on your own infrastructure, including docker-for-mac, virtual machines, aws, azure etc:
+A very simple Go-Redis app to demonstrate efficient image building processes & discovery of multiple services. If interested in a similar java / spring based app, please check out [Docker with Spring Boot](https://github.com/anokun7/docker-springframework).
+
+If you want to skip everything and just run this app on your own infrastructure, including docker-for-mac, virtual machines, aws, azure etc, and look at the results, follow the steps below:
+
 ```
 git clone https://github.com/anokun7/counter-demo.git
 cd counter-demo/test
