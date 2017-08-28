@@ -60,7 +60,7 @@ func stats(w http.ResponseWriter, context string) {
   // Generate stats for all other hits per hosts
   var hits []Hit
   keys, _ := redis.Strings(c.Do("KEYS", "*"))
-  // The total number of hit for any environment
+  // The total number of hits for any environment
   total := 0
   for _, key := range keys {
     value, _ := redis.Int(c.Do("GET", key))

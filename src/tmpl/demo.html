@@ -7,10 +7,18 @@ table { width: 10em; border-collapse: collapse; float: left; }
 .env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; width: 45%; display: inline-block; white-space: nowrap; text-shadow: 2px 2px #FFFFFF; }
 .name { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0; }
 .count { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em; color: green; }
+span { background-color: yellow; font:small-caption; }
+a { font:caption; }
     </style>
   </head>
   <body>
-    <p>Hi there, from <b>{{ .CurrentHost }}</b>!</p>
+    <p>Hi there, from <b>{{ .CurrentHost }}</b>!
+    {{if eq .Context "viewer"}}
+    <span> Note: This page shows stats and does not increment counts.</span></p>
+    To increment the counters, go to the <a href="/">Demo</a> page.
+    {{else}}
+    </p>To view stats, go to the <a href="/stats">Stats</a> page.
+    {{ end }}
     <hr/>
     <div class='cover'>
       <table>
