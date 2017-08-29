@@ -51,6 +51,6 @@ do
     done
     curl -s -o /dev/null $(docker service inspect --format '{{range .Endpoint.Ports }}localhost:{{ .PublishedPort }}{{ end }}' ${e}_web); printf "%2s" "=_"
   done;
-  ab -q -r -S -c 10 -n 10 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
+  ab -l -d -q -r -S -c 50 -n 1000 $(docker service inspect --format '{{range .Endpoint.Ports }}http://localhost:{{ .PublishedPort }}{{ end }}/' ${e}_web) 2>&1 > /dev/null
   echo ""
 done
