@@ -112,6 +112,9 @@ func main() {
 
 	http.HandleFunc("/stats", viewer)
 	http.HandleFunc("/", handler)
+	server := &http.Server{
+		Addr: ":8080",
+	}
 	log.Println("Starting counter-demo application...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(server.ListenAndServe())
 }
