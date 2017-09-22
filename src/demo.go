@@ -119,13 +119,14 @@ func init() {
 	if err != nil {
 		i := 0
 		for {
+			// try every two seconds to connect to db
 			time.Sleep(2 * time.Second)
 			c, err = redis.Dial("tcp", "db:6379")
 			if err != nil {
 				i += 1
 				fmt.Printf("%s: No Connection to db. Attempt %d\n", host, i)
 			} else {
-				fmt.Printf("%s: Connection to db established", host)
+				fmt.Printf("%s: Connection to db established.\n", host)
 				break
 			}
 		}

@@ -5,8 +5,9 @@
 .env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; width: 45%; display: inline-block; white-space: nowrap; text-shadow: 2px 2px #FFFFFF; }
 .name { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0; }
 .count { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em; color: green; }
-.refresh { padding: 0 .5em; background: lightsteelblue; text-align: center; font: bold .8em/1.2 Arial, sans-serif; border: 1px solid gray; margin: -3% 0 0 20%; width: 10em; text-decoration: none; }
-.refresh:hover { background: lightblue; box-shadow: 5px 5px lightgray; }
+.refresh { padding: 0 .5em; background: lightsteelblue; text-align: center; font: bold .8em/1.2 Arial, sans-serif; border: 1px solid gray; margin: -3% 0 0 20%; width: 10em; text-decoration: none; transition-property: all; transition-duration: 5s; }
+.refresh:hover { background: lightblue; box-shadow: 5px 5px lightgray; cursor: pointer; cursor: hand; }
+.refresh:active { background: blue; box-shadow: 5px 5px gray; }
 .refresh a { text-decoration: none; }
 a { font:caption; }
 img { transform: rotate({{ .Rotate }}deg); display: block; margin: 0 10%; }
