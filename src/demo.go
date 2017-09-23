@@ -1,14 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"html/template"
 	"log"
 	"math/rand"
 	"net/http"
 	"os"
+	"os/signal"
 	"sort"
+	"syscall"
 	"time"
 )
 
@@ -124,9 +125,9 @@ func init() {
 			c, err = redis.Dial("tcp", "db:6379")
 			if err != nil {
 				i += 1
-				fmt.Printf("%s: No Connection to db. Attempt %d\n", host, i)
+				log.Printf("%s: No Connection to db. Attempt %d\n", host, i)
 			} else {
-				fmt.Printf("%s: Connection to db established.\n", host)
+				log.Printf("%s: Connection to db established.\n", host)
 				break
 			}
 		}
@@ -140,11 +141,60 @@ func init() {
 }
 
 func main() {
+	signalChannel := make(chan os.Signal, 1)
+	exitChannel := make(chan bool, 1)
+
+	go shutdown(signalChannel, exitChannel)
+
 	http.HandleFunc("/stats", viewer)
 	http.HandleFunc("/", handler)
 	server := &http.Server{
 		Addr: ":8080",
 	}
-	log.Println("Starting counter-demo application...")
+	log.Printf("%s: Starting counter-demo application...", host)
 	log.Fatal(server.ListenAndServe())
+	<-exitChannel
+	os.Exit(0)
+}
+
+func shutdown(signalChannel chan os.Signal, exitChannel chan bool) {
+	signal.Notify(signalChannel, syscall.SIGTERM, syscall.SIGINT)
+	for {
+		signal := <-signalChannel
+		switch signal {
+		case syscall.SIGINT:
+			log.Printf("%s: Received signal: %s. To shutdown, use 'terminate (SIGTERM)' instead.\n", host, signal)
+		case syscall.SIGTERM:
+			log.Printf("%s: Received signal: %s. Cleaning up & shutting down gracefully.\n", host, signal)
+			cleanup()
+			exitChannel <- true
+		default:
+			log.Printf("%s: Received %s. No handler defined.\n", host, signal)
+		}
+	}
+}
+
+func cleanup() {
+	c, err := redis.Dial("tcp", "db:6379")
+	if err != nil {
+		i := 0
+		for {
+			// try every two seconds to connect to db
+			time.Sleep(2 * time.Second)
+			c, err = redis.Dial("tcp", "db:6379")
+			if err != nil {
+				i += 1
+				log.Printf("%s: No Connection to db. Attempt %d\n", host, i)
+			} else {
+				log.Printf("%s: Connection to db established.\n", host)
+				break
+			}
+		}
+	}
+	defer c.Close()
+
+	log.Printf("%s: Cleaning up counters and exiting.\n", host)
+
+	// INCR the value corresponding to the host key
+	c.Do("RENAME", host, "~"+host)
 }
