@@ -1,6 +1,9 @@
 <html>
   <head>
     <style> 
+#active { width: 0.6em; height: 0.6em; background: green; }
+#dead { width: 0.6em; height: 0.6em; background: lightgray; }
+.circle { border-radius: 50%; display: inline-block; margin: 5px; }
 .cover { max-width: 66% }
 .env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; width: 45%; display: inline-block; white-space: nowrap; text-shadow: 2px 2px #FFFFFF; }
 .name { border: 1px solid green; font: normal 1.5em monospace; padding: 0 .25em 0 0; }
@@ -28,18 +31,26 @@ table { width: 10em; border-collapse: collapse; float: left; }
     <div class='cover'>
       <table>
         <tr>
+          <th style='border: 2px dotted green;'>#</th>
           <th style='border: 2px dotted green;'>Container</th>
           <th style='padding: 5px; border: 2px dotted green;'>#</th>
         </tr>
         {{ range .Hits }}
         <tr>
+          <td class="name">
+            {{ if eq .Active true }}
+            <div id="active" class="circle"></div>
+            {{ else }}
+            <div id="dead" class="circle"></div>
+            {{ end }}
+          </td>
           <td class='name'>{{ .Host }}</td>
           <td class='count'>{{ .Count }}</td>
         </tr>
         {{ end }}
         {{ if eq .Context "viewer" }}
         <tr>
-          <th class='name'><strong>Total</strong></th>
+          <th class='name' colspan="2"><strong>Total</strong></th>
           <th class='count'><strong>{{ .Total }}</strong></th>
         </tr>
         {{ end }}

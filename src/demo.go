@@ -9,14 +9,16 @@ import (
 	"os"
 	"os/signal"
 	"sort"
+	"strings"
 	"syscall"
 	"time"
 )
 
 // data structure to hold the hit counts per host
 type Hit struct {
-	Host  string
-	Count int
+	Host   string
+	Count  int
+	Active bool
 }
 
 // global string to hold container's hostname
@@ -68,6 +70,7 @@ func stats(w http.ResponseWriter, context string) {
 	}
 	defer c.Close()
 
+	// Get running containers only (all except those that begin with '~'
 	keys, _ := redis.Strings(c.Do("KEYS", "[^~]*"))
 
 	// Generate stats for all other hits per hosts
@@ -76,26 +79,25 @@ func stats(w http.ResponseWriter, context string) {
 	total := 0
 	for _, key := range keys {
 		value, _ := redis.Int(c.Do("GET", key))
+		//Detect leaks
 		terminated, _ := redis.Int(c.Do("EXISTS", "~"+key))
 		if terminated == 1 && key == host {
 			log.Printf("%s: Found a leak. Deleting\n", key)
 			redis.Int(c.Do("DEL", key))
 			leakedValue, _ := redis.Int(c.Do("GET", "~"+key))
-			log.Printf("%s: Leaked value: %d %d\n", key, value, leakedValue)
-			value = value + leakedValue
-			log.Printf("%s: Total value: %d\n", key, value)
-			hits = append(hits, Hit{"~" + key, value})
+			redis.Int(c.Do("SET", key, value+leakedValue))
 		} else {
-			hits = append(hits, Hit{key, value})
+			hits = append(hits, Hit{key, value, true})
 		}
 		total = total + value
 	}
 
+	// Get terminated containers only (all starting with '~')
 	tkeys, _ := redis.Strings(c.Do("KEYS", "~*"))
 
 	for _, key := range tkeys {
 		value, _ := redis.Int(c.Do("GET", key))
-		hits = append(hits, Hit{key, value})
+		hits = append(hits, Hit{strings.Trim(key, "~"), value, false})
 		total = total + value
 	}
 
