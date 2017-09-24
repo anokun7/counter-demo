@@ -36,19 +36,28 @@ table { width: 10em; border-collapse: collapse; float: left; }
           <th style='padding: 5px; border: 2px dotted green;'>#</th>
         </tr>
         {{ range .Hits }}
+        {{ if eq .Active 1 }}
         <tr>
           <td class="name">
-            {{ if eq .Active true }}
             <div id="active" class="circle"></div>
-            {{ else }}
-            <div id="dead" class="circle"></div>
-            {{ end }}
           </td>
           <td class='name'>{{ .Host }}</td>
           <td class='count'>{{ .Count }}</td>
         </tr>
         {{ end }}
+        {{ end }}
         {{ if eq .Context "viewer" }}
+        {{ range .Hits }}
+        {{ if eq .Active 0 }}
+        <tr>
+          <td class="name">
+            <div id="dead" class="circle"></div>
+          </td>
+          <td class='name'>{{ .Host }}</td>
+          <td class='count'>{{ .Count }}</td>
+        </tr>
+        {{ end }}
+        {{ end }}
         <tr>
           <th class='name' colspan="2"><strong>Total</strong></th>
           <th class='count'><strong>{{ .Total }}</strong></th>

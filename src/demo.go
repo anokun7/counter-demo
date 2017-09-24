@@ -16,9 +16,8 @@ import (
 
 // data structure to hold the hit counts per host
 type Hit struct {
-	Host   string
-	Count  int
-	Active bool
+	Host          string
+	Count, Active int
 }
 
 // global string to hold container's hostname
@@ -32,7 +31,7 @@ type ByHost []Hit
 
 func (h ByHost) Len() int           { return len(h) }
 func (h ByHost) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h ByHost) Less(i, j int) bool { return h[i].Host < h[j].Host }
+func (h ByHost) Less(i, j int) bool { return h[i].Host < h[j].Host && h[i].Active < h[j].Active }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	// Increment only for requests for URL's "/" because chrome
@@ -87,7 +86,7 @@ func stats(w http.ResponseWriter, context string) {
 			leakedValue, _ := redis.Int(c.Do("GET", "~"+key))
 			redis.Int(c.Do("SET", key, value+leakedValue))
 		} else {
-			hits = append(hits, Hit{key, value, true})
+			hits = append(hits, Hit{key, value, 1})
 		}
 		total = total + value
 	}
@@ -97,7 +96,7 @@ func stats(w http.ResponseWriter, context string) {
 
 	for _, key := range tkeys {
 		value, _ := redis.Int(c.Do("GET", key))
-		hits = append(hits, Hit{strings.Trim(key, "~"), value, false})
+		hits = append(hits, Hit{strings.Trim(key, "~"), value, 0})
 		total = total + value
 	}
 
