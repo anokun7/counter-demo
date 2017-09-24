@@ -22,6 +22,9 @@ type Hit struct {
 // global string to hold container's hostname
 var host string
 
+// global const string to hold Database URL
+const dbURL = "db:6379"
+
 // To sort the hits slice by hostnames
 type ByHost []Hit
 
@@ -37,14 +40,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		// connect to redis. The redis db host should be reachable as "db"
 		// Using "db" as network alias & default port
-		c, err := redis.Dial("tcp", "db:6379")
+		c, err := redis.Dial("tcp", dbURL)
 		if err != nil {
 			panic(err)
 		}
 		defer c.Close()
 
 		// INCR the value corresponding to the host key
-		c.Do("INCR", host)
+		// Prevent incrementing if container is shutting down
+		terminated, _ := redis.Int(c.Do("EXISTS", "~"+host))
+		if terminated != 1 {
+			c.Do("INCR", host)
+		}
 	}
 	stats(w, "incr")
 }
@@ -54,15 +61,14 @@ func stats(w http.ResponseWriter, context string) {
 	env := os.Getenv("ENVIRONMENT")
 	rotate := rand.Intn(180)
 
-	// connect to redis. The redis db host should be reachable as "db"
-	// Using "db" as network alias & default port
-	c, err := redis.Dial("tcp", "db:6379")
+	// connect to redis.
+	c, err := redis.Dial("tcp", dbURL)
 	if err != nil {
 		panic(err)
 	}
 	defer c.Close()
 
-	keys, _ := redis.Strings(c.Do("KEYS", "*"))
+	keys, _ := redis.Strings(c.Do("KEYS", "[^~]*"))
 
 	// Generate stats for all other hits per hosts
 	var hits []Hit
@@ -70,8 +76,26 @@ func stats(w http.ResponseWriter, context string) {
 	total := 0
 	for _, key := range keys {
 		value, _ := redis.Int(c.Do("GET", key))
-		hit := Hit{key, value}
-		hits = append(hits, hit)
+		terminated, _ := redis.Int(c.Do("EXISTS", "~"+key))
+		if terminated == 1 {
+			log.Printf("%s: Found a leak. Deleting\n", key)
+			redis.Int(c.Do("DEL", key))
+			leakedValue, _ := redis.Int(c.Do("GET", "~"+key))
+			log.Printf("%s: Leaked value: %d %d\n", key, value, leakedValue)
+			value = value + leakedValue
+			log.Printf("%s: Total value: %d\n", key, value)
+			hits = append(hits, Hit{"~" + key, value})
+		} else {
+			hits = append(hits, Hit{key, value})
+		}
+		total = total + value
+	}
+
+	tkeys, _ := redis.Strings(c.Do("KEYS", "~*"))
+
+	for _, key := range tkeys {
+		value, _ := redis.Int(c.Do("GET", key))
+		hits = append(hits, Hit{key, value})
 		total = total + value
 	}
 
@@ -96,7 +120,7 @@ func stats(w http.ResponseWriter, context string) {
 		return
 	}
 
-	// Voila
+	// Voila (template magic)
 	exeErr := t.Execute(w, data)
 	if exeErr != nil {
 		log.Fatal("Execute error: ", exeErr)
@@ -116,13 +140,13 @@ func init() {
 
 	// connect to redis. The redis db host should be reachable as "db"
 	// Using "db" as network alias & default port
-	c, err := redis.Dial("tcp", "db:6379")
+	c, err := redis.Dial("tcp", dbURL)
 	if err != nil {
 		i := 0
 		for {
 			// try every two seconds to connect to db
 			time.Sleep(2 * time.Second)
-			c, err = redis.Dial("tcp", "db:6379")
+			c, err = redis.Dial("tcp", dbURL)
 			if err != nil {
 				i += 1
 				log.Printf("%s: No Connection to db. Attempt %d\n", host, i)
@@ -168,6 +192,7 @@ func shutdown(signalChannel chan os.Signal, exitChannel chan bool) {
 			log.Printf("%s: Received signal: %s. Cleaning up & shutting down gracefully.\n", host, signal)
 			cleanup()
 			exitChannel <- true
+			return
 		default:
 			log.Printf("%s: Received %s. No handler defined.\n", host, signal)
 		}
@@ -175,21 +200,9 @@ func shutdown(signalChannel chan os.Signal, exitChannel chan bool) {
 }
 
 func cleanup() {
-	c, err := redis.Dial("tcp", "db:6379")
+	c, err := redis.Dial("tcp", dbURL)
 	if err != nil {
-		i := 0
-		for {
-			// try every two seconds to connect to db
-			time.Sleep(2 * time.Second)
-			c, err = redis.Dial("tcp", "db:6379")
-			if err != nil {
-				i += 1
-				log.Printf("%s: No Connection to db. Attempt %d\n", host, i)
-			} else {
-				log.Printf("%s: Connection to db established.\n", host)
-				break
-			}
-		}
+		panic(err)
 	}
 	defer c.Close()
 
