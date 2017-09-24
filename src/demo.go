@@ -77,7 +77,7 @@ func stats(w http.ResponseWriter, context string) {
 	for _, key := range keys {
 		value, _ := redis.Int(c.Do("GET", key))
 		terminated, _ := redis.Int(c.Do("EXISTS", "~"+key))
-		if terminated == 1 {
+		if terminated == 1 && key == host {
 			log.Printf("%s: Found a leak. Deleting\n", key)
 			redis.Int(c.Do("DEL", key))
 			leakedValue, _ := redis.Int(c.Do("GET", "~"+key))
@@ -168,6 +168,7 @@ func main() {
 	signalChannel := make(chan os.Signal, 1)
 	exitChannel := make(chan bool, 1)
 
+	// go routine to watch for signals, for graceful shutdown
 	go shutdown(signalChannel, exitChannel)
 
 	http.HandleFunc("/stats", viewer)
@@ -189,7 +190,7 @@ func shutdown(signalChannel chan os.Signal, exitChannel chan bool) {
 		case syscall.SIGINT:
 			log.Printf("%s: Received signal: %s. To shutdown, use 'terminate (SIGTERM)' instead.\n", host, signal)
 		case syscall.SIGTERM:
-			log.Printf("%s: Received signal: %s. Cleaning up & shutting down gracefully.\n", host, signal)
+			log.Printf("%s: Received signal: %s. Initiating clean up.\n", host, signal)
 			cleanup()
 			exitChannel <- true
 			return
@@ -206,8 +207,9 @@ func cleanup() {
 	}
 	defer c.Close()
 
-	log.Printf("%s: Cleaning up counters and exiting.\n", host)
+	log.Printf("%s: Cleaning up counters for graceful shutdown.\n", host)
 
-	// INCR the value corresponding to the host key
+	// RENAME the key corresponding to the host key that was shutdown
+	// This will allow it to be differentiated from currently running replicas
 	c.Do("RENAME", host, "~"+host)
 }
