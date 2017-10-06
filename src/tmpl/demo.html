@@ -41,7 +41,7 @@ table { width: 10em; border-collapse: collapse; float: left; }
           <td class="name">
             <div id="active" class="circle"></div>
           </td>
-          <td class='name'>{{ .Host }}</td>
+          <td class='name'><nobr>{{ .Host }}</nobr></td>
           <td class='count'>{{ .Count }}</td>
         </tr>
         {{ end }}
@@ -53,7 +53,7 @@ table { width: 10em; border-collapse: collapse; float: left; }
           <td class="name">
             <div id="dead" class="circle"></div>
           </td>
-          <td class='name'>{{ .Host }}</td>
+          <td class='name'><nobr>{{ .Host }}</nobr></td>
           <td class='count'>{{ .Count }}</td>
         </tr>
         {{ end }}
