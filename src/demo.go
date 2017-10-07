@@ -41,11 +41,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		// connect to redis. The redis db host should be reachable as "db"
 		// Using "db" as network alias & default port
-		c, err := redis.Dial("tcp", dbURL)
-		if err != nil {
-			panic(err)
-		}
-		defer c.Close()
+		c := connectDB()
 
 		// INCR the value corresponding to the host key
 		// Prevent incrementing if container is shutting down
@@ -63,11 +59,7 @@ func stats(w http.ResponseWriter, context string) {
 	rotate := rand.Intn(180)
 
 	// connect to redis.
-	c, err := redis.Dial("tcp", dbURL)
-	if err != nil {
-		panic(err)
-	}
-	defer c.Close()
+	c := connectDB()
 
 	// Get running containers only (all except those that begin with '~'
 	keys, _ := redis.Strings(c.Do("KEYS", "[^~]*"))
@@ -202,15 +194,20 @@ func shutdown(signalChannel chan os.Signal, exitChannel chan bool) {
 }
 
 func cleanup() {
-	c, err := redis.Dial("tcp", dbURL)
-	if err != nil {
-		panic(err)
-	}
-	defer c.Close()
+	c := connectDB()
 
 	log.Printf("%s: Cleaning up counters for graceful shutdown.\n", host)
 
 	// RENAME the key corresponding to the host key that was shutdown
 	// This will allow it to be differentiated from currently running replicas
 	c.Do("RENAME", host, "~"+host)
+}
+
+func connectDB() redis.Conn {
+	c, err := redis.Dial("tcp", dbURL)
+	if err != nil {
+		panic(err)
+	}
+	defer c.Close()
+	return c
 }
