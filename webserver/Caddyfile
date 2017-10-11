@@ -1,9 +1,6 @@
 0.0.0.0:2015
 ext .html .htm
 templates
-header /total {
-    Access-Control-Allow-Origin  *
-}
 proxy / app:8080 {
   websocket
   policy round_robin
