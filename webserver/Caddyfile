@@ -1,0 +1,10 @@
+0.0.0.0:2015
+ext .html .htm
+templates
+proxy / app:8080 {
+  websocket
+  policy round_robin
+  except /home /home.html
+}
+log stdout
+errors stdout

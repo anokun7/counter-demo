@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gorilla/websocket"
 	"html/template"
 	"log"
 	"math/rand"
@@ -13,6 +15,12 @@ import (
 	"syscall"
 	"time"
 )
+
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin:     func(r *http.Request) bool { return true },
+}
 
 // data structure to hold the hit counts per host
 type Hit struct {
@@ -172,6 +180,37 @@ func main() {
 	// go routine to watch for signals, for graceful shutdown
 	go shutdown(signalChannel, exitChannel)
 
+	http.HandleFunc("/total", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s: Websocket launched\n", host)
+		conn, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			log.Printf("%s: Error upgrading http to websocket: %s\n", host, err)
+			return
+		}
+
+		c, err := redis.Dial("tcp", dbURL)
+		if err != nil {
+			log.Printf("%s: Error connecting to db: %s\n", host, err)
+		}
+		defer c.Close()
+
+		for {
+			time.Sleep(2 * time.Second)
+			// The total number of hits for any environment
+			total := 0
+			keys, _ := redis.Strings(c.Do("KEYS", "*"))
+			for _, key := range keys {
+				value, _ := redis.Int(c.Do("GET", key))
+				total = total + value
+				wsTotal, err := json.Marshal(total)
+				if err != nil {
+					log.Printf("%s: Error in json.Marshal(): %s\n", host, err)
+					return
+				}
+				conn.WriteMessage(websocket.TextMessage, wsTotal)
+			}
+		}
+	})
 	http.HandleFunc("/stats", viewer)
 	http.HandleFunc("/", handler)
 	server := &http.Server{

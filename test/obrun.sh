@@ -1,8 +1,11 @@
 #!/bin/bash
 printf "%100s\n" "------------------------ Starting Docker build --------------------"
+printf "%100s\n" "============================ Building web ========================="
+docker build -t ${dockerid:-anoop}/webserver:latest -f ../webserver/Dockerfile ../webserver
 printf "%100s\n" "==================== Building ONBUILD version of app =============="
 docker build -t ${dockerid:-anoop}/counter-demo:onbuild -f ../src/Dockerfile ../src
 printf "%100s\n" "========================== Pushing all images ======================"
+docker push ${dockerid:-anoop}/webserver
 docker push ${dockerid:-anoop}/counter-demo:onbuild
 printf "%100s\n\n" "==================== Finished pushing all images ===================="
 printf "%100s\n" "============================================ Deploying STACKS ======="
