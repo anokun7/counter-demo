@@ -21,6 +21,7 @@ function showTotalInBanner() {
     <style> 
 #active { width: 0.6em; height: 0.6em; background: green; }
 #dead { width: 0.6em; height: 0.6em; background: lightgray; }
+#totalInBanner { font: 46px Arial, sans-serif; color: white; background: #ffbd17; float: right; margin-right: 2em; border-radius: 10px; margin-top: -0.7em; }
 .circle { border-radius: 50%; display: inline-block; margin: 5px; }
 .cover { max-width: 66% }
 .env { color: lightgray; float: right; font: bold 96px/1.5 Arial, sans-serif; text-align: left; width: 45%; display: inline-block; white-space: nowrap; text-shadow: 2px 2px #FFFFFF; }
@@ -45,47 +46,49 @@ table { width: 10em; border-collapse: collapse; float: left; }
     </p><div class="refresh"><a href=".">Increment counter (Refresh)</a></div>
     To view stats, go to the <a href="/stats">Stats</a> page.
     {{ end }}
-    <div id="totalInBanner" style="float: right;">Calculating...</div>
-    <hr/>
-    <div class='cover'>
-      <table>
-        <tr>
-          <th style='border: 2px dotted green;'>#</th>
-          <th style='border: 2px dotted green;'>Container</th>
-          <th style='padding: 5px; border: 2px dotted green;'>#</th>
-        </tr>
-        {{ range .Hits }}
-        {{ if eq .Active 1 }}
-        <tr>
-          <td class="name">
-            <div id="active" class="circle"></div>
-          </td>
-          <td class='name'><nobr>{{ .Host }}</nobr></td>
-          <td class='count'>{{ .Count }}</td>
-        </tr>
-        {{ end }}
-        {{ end }}
-        {{ if eq .Context "viewer" }}
-        {{ range .Hits }}
-        {{ if eq .Active 0 }}
-        <tr>
-          <td class="name">
-            <div id="dead" class="circle"></div>
-          </td>
-          <td class='name'><nobr>{{ .Host }}</nobr></td>
-          <td class='count'>{{ .Count }}</td>
-        </tr>
-        {{ end }}
-        {{ end }}
-        <tr>
-          <th class='name' colspan="2"><strong>Total</strong></th>
-          <th class='count'><strong>{{ .Total }}</strong></th>
-        </tr>
-        {{ end }}
-      </table>
-      <div class='env'>
-        <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>
-        {{ .Env }}
+    <div id="totalInBanner">Calculating...</div>
+    <div id="container">
+      <hr/>
+      <div class='cover'>
+        <table>
+          <tr>
+            <th style='border: 2px dotted green;'>#</th>
+            <th style='border: 2px dotted green;'>Container</th>
+            <th style='padding: 5px; border: 2px dotted green;'>#</th>
+          </tr>
+          {{ range .Hits }}
+          {{ if eq .Active 1 }}
+          <tr>
+            <td class="name">
+              <div id="active" class="circle"></div>
+            </td>
+            <td class='name'><nobr>{{ .Host }}</nobr></td>
+            <td class='count'>{{ .Count }}</td>
+          </tr>
+          {{ end }}
+          {{ end }}
+          {{ if eq .Context "viewer" }}
+          {{ range .Hits }}
+          {{ if eq .Active 0 }}
+          <tr>
+            <td class="name">
+              <div id="dead" class="circle"></div>
+            </td>
+            <td class='name'><nobr>{{ .Host }}</nobr></td>
+            <td class='count'>{{ .Count }}</td>
+          </tr>
+          {{ end }}
+          {{ end }}
+          <tr>
+            <th class='name' colspan="2"><strong>Total</strong></th>
+            <th class='count'><strong>{{ .Total }}</strong></th>
+          </tr>
+          {{ end }}
+        </table>
+        <div class='env'>
+          <img src="https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2014/Aug/28/agave-docker-logo-878776697-6_avatar.png"/>
+          {{ .Env }}
+        </div>
       </div>
     </div>
   </body>
