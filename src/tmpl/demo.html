@@ -2,7 +2,7 @@
   <head>
     <script type="text/javascript">
 function showTotalInBanner() {
-  var ws = new WebSocket("ws://localhost:30000/total");
+  var ws = new WebSocket("ws://" + location.host + "/total");
   ws.onopen = function () {
     console.log("Opened Websocket connection");
   };
