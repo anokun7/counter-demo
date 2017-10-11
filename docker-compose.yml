@@ -9,8 +9,8 @@ services:
       replicas: 5
 #     labels:
 #       com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
-    ports:
-      - "2015"
+#   ports:
+#     - "2015"
     networks:
       - frontend
 #     - ucp-hrm
@@ -20,9 +20,11 @@ services:
 #   hostname: ${stackname:-app}-{{.Task.Slot}}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
+    ports:
+      - "8080"
     deploy:
       replicas: 10
-      endpoint_mode: dnsrr
+#     endpoint_mode: dnsrr
     networks:
       - frontend
       - backend

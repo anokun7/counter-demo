@@ -1,5 +1,14 @@
 <html>
   <head>
+    <script type="text/javascript">
+function showTotalInBanner() {
+  var ws = new WebSocket("ws://localhost:30000/total");
+  ws.onmessage = function (evt) {
+    var mtxt = document.getElementById("totalInBanner");
+    mtxt.textContent = evt.data
+  };
+}
+    </script>
     <style> 
 #active { width: 0.6em; height: 0.6em; background: green; }
 #dead { width: 0.6em; height: 0.6em; background: lightgray; }
@@ -18,7 +27,7 @@ span { background-color: yellow; font:small-caption; }
 table { width: 10em; border-collapse: collapse; float: left; }
     </style>
   </head>
-  <body>
+  <body onload="javascript:showTotalInBanner()">
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     {{ if eq .Context "viewer" }}
     <span> Note: This page shows stats and does not increment counts.</span></p>
@@ -27,6 +36,7 @@ table { width: 10em; border-collapse: collapse; float: left; }
     </p><div class="refresh"><a href=".">Increment counter (Refresh)</a></div>
     To view stats, go to the <a href="/stats">Stats</a> page.
     {{ end }}
+    <div id="totalInBanner" style="float: right;">Calculating...</div>
     <hr/>
     <div class='cover'>
       <table>
