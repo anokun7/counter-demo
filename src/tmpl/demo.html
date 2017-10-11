@@ -3,9 +3,18 @@
     <script type="text/javascript">
 function showTotalInBanner() {
   var ws = new WebSocket("ws://localhost:30000/total");
+  ws.onopen = function () {
+    console.log("Opened Websocket connection");
+  };
   ws.onmessage = function (evt) {
     var mtxt = document.getElementById("totalInBanner");
     mtxt.textContent = evt.data
+  };
+  ws.onerror = function (error) {
+    console.log('WebSocket Error ' + error);
+  };
+  ws.onclose = function () {
+    console.log("DISCONNECTED");
   };
 }
     </script>

@@ -181,16 +181,16 @@ func main() {
 	go shutdown(signalChannel, exitChannel)
 
 	http.HandleFunc("/total", func(w http.ResponseWriter, r *http.Request) {
-		println("Websocket launched")
+		log.Printf("%s: Websocket launched\n", host)
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			println(err)
+			log.Printf("%s: Error upgrading http to websocket: %s\n", host, err)
 			return
 		}
 
 		c, err := redis.Dial("tcp", dbURL)
 		if err != nil {
-			panic(err)
+			log.Printf("%s: Error connecting to db: %s\n", host, err)
 		}
 		defer c.Close()
 
@@ -202,17 +202,12 @@ func main() {
 			for _, key := range keys {
 				value, _ := redis.Int(c.Do("GET", key))
 				total = total + value
-				println(total)
-				myJson, err := json.Marshal(total)
+				wsTotal, err := json.Marshal(total)
 				if err != nil {
-					println(err)
+					log.Printf("%s: Error in json.Marshal(): %s\n", host, err)
 					return
 				}
-				err = conn.WriteMessage(websocket.TextMessage, myJson)
-				if err != nil {
-					println(err)
-					break
-				}
+				conn.WriteMessage(websocket.TextMessage, wsTotal)
 			}
 		}
 	})
