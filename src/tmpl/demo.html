@@ -37,7 +37,7 @@ span { background-color: yellow; font:small-caption; }
 table { width: 10em; border-collapse: collapse; float: left; }
     </style>
   </head>
-  <body onload="javascript:showTotalInBanner()">
+  <body onload="javascript:showTotalInBanner();">
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
     {{ if eq .Context "viewer" }}
     <span> Note: This page shows stats and does not increment counts.</span></p>
