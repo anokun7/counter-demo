@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/websocket"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -55,6 +57,19 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer c.Close()
 
+		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+		pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+		if err != nil {
+			log.Printf("Could not read password for redis from file")
+		} else {
+			_, err = c.Do("AUTH", pw)
+			if err != nil {
+				log.Printf("Authenticating to db failed, using %s", pw)
+			} else {
+				log.Printf("Success: Authenticated to db successfully")
+			}
+		}
+
 		// INCR the value corresponding to the host key
 		// Prevent incrementing if container is shutting down
 		terminated, _ := redis.Int(c.Do("EXISTS", "~"+host))
@@ -76,6 +91,19 @@ func stats(w http.ResponseWriter, context string) {
 		panic(err)
 	}
 	defer c.Close()
+
+	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	if err != nil {
+		log.Printf("Could not read password for redis from file")
+	} else {
+		_, err = c.Do("AUTH", pw)
+		if err != nil {
+			log.Printf("Authenticating to db failed, using %s", pw)
+		} else {
+			log.Printf("Success: Authenticated to db successfully")
+		}
+	}
 
 	// Get running containers only (all except those that begin with '~'
 	keys, _ := redis.Strings(c.Do("KEYS", "[^~]*"))
@@ -167,6 +195,19 @@ func init() {
 	}
 	defer c.Close()
 
+	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	if err != nil {
+		log.Printf("Could not read password for redis from file")
+	} else {
+		_, err = c.Do("AUTH", pw)
+		if err != nil {
+			log.Printf("Authenticating to db failed, using %s", pw)
+		} else {
+			log.Printf("Success: Authenticated to db successfully")
+		}
+	}
+
 	log.Printf("Initiating counter for %s\n", host)
 
 	// INCR the value corresponding to the host key
@@ -193,6 +234,19 @@ func main() {
 			log.Printf("%s: Error connecting to db: %s\n", host, err)
 		}
 		defer c.Close()
+
+		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+		pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+		if err != nil {
+			log.Printf("Could not read password for redis from file")
+		} else {
+			_, err = c.Do("AUTH", pw)
+			if err != nil {
+				log.Printf("Authenticating to db failed, using %s", pw)
+			} else {
+				log.Printf("Success: Authenticated to db successfully")
+			}
+		}
 
 		for {
 			time.Sleep(2 * time.Second)
@@ -246,6 +300,19 @@ func cleanup() {
 		panic(err)
 	}
 	defer c.Close()
+
+	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	if err != nil {
+		log.Printf("Could not read password for redis from file")
+	} else {
+		_, err = c.Do("AUTH", pw)
+		if err != nil {
+			log.Printf("Authenticating to db failed, using %s", pw)
+		} else {
+			log.Printf("Success: Authenticated to db successfully")
+		}
+	}
 
 	log.Printf("%s: Cleaning up counters for graceful shutdown.\n", host)
 

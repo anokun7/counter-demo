@@ -26,13 +26,22 @@ services:
     networks:
       - frontend
       - backend
+    secrets:
+      - redis-pass
 
   db:
     image: redis:${redis-version:-latest}
+    command: ["redis-server", "/run/secrets/redis-pass"]
+    secrets:
+      - redis-pass
     volumes:
       - data:/data
     networks:
       backend:
+
+secrets:
+  redis-pass:
+    external: true
 
 networks:
 # ucp-hrm:
