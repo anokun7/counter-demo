@@ -32,8 +32,8 @@ type Hit struct {
 // global string to hold container's hostname
 var host string
 
-// global string to hold password to authenticate to redis db
-var pw string
+// global string to hold password & the file that contains the same password to authenticate to redis db
+var pw, dbPasswordFile string
 
 // global const string to hold Database URL
 const dbURL = "db:6379"
@@ -61,7 +61,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf(" Handler: Authenticating to db failed, using %s", pw)
+			log.Printf("%s: Handler() Authenticating to db failed, using %s", host, pw)
 		}
 
 		// INCR the value corresponding to the host key
@@ -88,7 +88,7 @@ func stats(w http.ResponseWriter, context string) {
 
 	_, err = c.Do("AUTH", pw)
 	if err != nil {
-		log.Printf("Stats: Authenticating to db failed, using %s", pw)
+		log.Printf("%s: Stats() Authenticating to db failed, using %s", host, pw)
 	}
 
 	// Get running containers only (all except those that begin with '~'
@@ -181,16 +181,21 @@ func init() {
 	}
 	defer c.Close()
 
-	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
+	// The database password file to retrieve password to connect to redis. eg: /run/secrets/redis-pass
+	// The contents of the file should be "requirepass password"
+	dbPasswordFile = os.Getenv("DB_PASSWORD_FILE")
+	log.Printf("%s: Reading password for redis from file: %s", host, dbPasswordFile)
+
+	fcontents, err := ioutil.ReadFile(dbPasswordFile)
 	pw = strings.Fields(string(fcontents[:]))[1]
 	if err != nil {
-		log.Printf("Could not read password for redis from file")
+		log.Printf("%s: Could not read password for redis from file", host)
 	} else {
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf("Init: Authenticating to db failed, using %s", pw)
+			log.Printf("%s: Init() Authenticating to db failed, using %s", host, pw)
 		} else {
-			log.Printf("Success: Authenticated to db successfully")
+			log.Printf("%s: SUCCESS: Authenticated to db successfully", host)
 		}
 	}
 
@@ -223,7 +228,7 @@ func main() {
 
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf("WS: Authenticating to db failed, using %s", pw)
+			log.Printf("Authenticating to db failed, using %s", pw)
 		}
 
 		for {
@@ -281,7 +286,7 @@ func cleanup() {
 
 	_, err = c.Do("AUTH", pw)
 	if err != nil {
-		log.Printf("Cleanup: Authenticating to db failed, using %s", pw)
+		log.Printf("%s: Cleanup() Authenticating to db failed, using %s", host, pw)
 	}
 
 	log.Printf("%s: Cleaning up counters for graceful shutdown.\n", host)

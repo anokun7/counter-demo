@@ -20,6 +20,7 @@ services:
 #   hostname: ${stackname:-app}-{{.Task.Slot}}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
+      DB_PASSWORD_FILE: /run/secrets/redis-pass
     deploy:
       replicas: 10
       endpoint_mode: dnsrr
