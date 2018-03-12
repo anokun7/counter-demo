@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/websocket"
 	"html/template"
@@ -58,7 +57,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		defer c.Close()
 
 		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-		pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+		pw := strings.Fields(string(fcontents[:]))[1]
 		if err != nil {
 			log.Printf("Could not read password for redis from file")
 		} else {
@@ -93,7 +92,7 @@ func stats(w http.ResponseWriter, context string) {
 	defer c.Close()
 
 	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	pw := strings.Fields(string(fcontents[:]))[1]
 	if err != nil {
 		log.Printf("Could not read password for redis from file")
 	} else {
@@ -196,7 +195,7 @@ func init() {
 	defer c.Close()
 
 	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	pw := strings.Fields(string(fcontents[:]))[1]
 	if err != nil {
 		log.Printf("Could not read password for redis from file")
 	} else {
@@ -236,7 +235,7 @@ func main() {
 		defer c.Close()
 
 		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-		pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+		pw := strings.Fields(string(fcontents[:]))[1]
 		if err != nil {
 			log.Printf("Could not read password for redis from file")
 		} else {
@@ -302,7 +301,7 @@ func cleanup() {
 	defer c.Close()
 
 	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Split(fmt.Sprintf("%s", fcontents), " ")[1]
+	pw := strings.Fields(string(fcontents[:]))[1]
 	if err != nil {
 		log.Printf("Could not read password for redis from file")
 	} else {

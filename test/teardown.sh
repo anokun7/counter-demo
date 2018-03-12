@@ -1,5 +1,5 @@
 #!/bin/bash
-for i in $(docker ps --filter name=_db. -q); do docker exec $i redis-cli flushall ; done
+for i in $(docker ps --filter name=_db. -q); do docker exec $i redis-cli -a $1 flushall ; done
 
 for p in OnBuild QA1 QA2 Prod
 do
