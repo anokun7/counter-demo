@@ -32,6 +32,9 @@ type Hit struct {
 // global string to hold container's hostname
 var host string
 
+// global string to hold password to authenticate to redis db
+var pw string
+
 // global const string to hold Database URL
 const dbURL = "db:6379"
 
@@ -56,17 +59,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer c.Close()
 
-		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-		pw := strings.Fields(string(fcontents[:]))[1]
+		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf("Could not read password for redis from file")
-		} else {
-			_, err = c.Do("AUTH", pw)
-			if err != nil {
-				log.Printf("Authenticating to db failed, using %s", pw)
-			} else {
-				log.Printf("Success: Authenticated to db successfully")
-			}
+			log.Printf(" Handler: Authenticating to db failed, using %s", pw)
 		}
 
 		// INCR the value corresponding to the host key
@@ -91,17 +86,9 @@ func stats(w http.ResponseWriter, context string) {
 	}
 	defer c.Close()
 
-	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Fields(string(fcontents[:]))[1]
+	_, err = c.Do("AUTH", pw)
 	if err != nil {
-		log.Printf("Could not read password for redis from file")
-	} else {
-		_, err = c.Do("AUTH", pw)
-		if err != nil {
-			log.Printf("Authenticating to db failed, using %s", pw)
-		} else {
-			log.Printf("Success: Authenticated to db successfully")
-		}
+		log.Printf("Stats: Authenticating to db failed, using %s", pw)
 	}
 
 	// Get running containers only (all except those that begin with '~'
@@ -195,13 +182,13 @@ func init() {
 	defer c.Close()
 
 	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Fields(string(fcontents[:]))[1]
+	pw = strings.Fields(string(fcontents[:]))[1]
 	if err != nil {
 		log.Printf("Could not read password for redis from file")
 	} else {
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf("Authenticating to db failed, using %s", pw)
+			log.Printf("Init: Authenticating to db failed, using %s", pw)
 		} else {
 			log.Printf("Success: Authenticated to db successfully")
 		}
@@ -234,17 +221,9 @@ func main() {
 		}
 		defer c.Close()
 
-		fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-		pw := strings.Fields(string(fcontents[:]))[1]
+		_, err = c.Do("AUTH", pw)
 		if err != nil {
-			log.Printf("Could not read password for redis from file")
-		} else {
-			_, err = c.Do("AUTH", pw)
-			if err != nil {
-				log.Printf("Authenticating to db failed, using %s", pw)
-			} else {
-				log.Printf("Success: Authenticated to db successfully")
-			}
+			log.Printf("WS: Authenticating to db failed, using %s", pw)
 		}
 
 		for {
@@ -300,17 +279,9 @@ func cleanup() {
 	}
 	defer c.Close()
 
-	fcontents, err := ioutil.ReadFile("/run/secrets/redis-pass")
-	pw := strings.Fields(string(fcontents[:]))[1]
+	_, err = c.Do("AUTH", pw)
 	if err != nil {
-		log.Printf("Could not read password for redis from file")
-	} else {
-		_, err = c.Do("AUTH", pw)
-		if err != nil {
-			log.Printf("Authenticating to db failed, using %s", pw)
-		} else {
-			log.Printf("Success: Authenticated to db successfully")
-		}
+		log.Printf("Cleanup: Authenticating to db failed, using %s", pw)
 	}
 
 	log.Printf("%s: Cleaning up counters for graceful shutdown.\n", host)
