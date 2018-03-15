@@ -59,6 +59,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer c.Close()
 
+		// authenticate the connection using the password parsed from the file
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
 			log.Printf("%s: Handler() Authenticating to db failed, using %s", host, pw)
@@ -86,6 +87,7 @@ func stats(w http.ResponseWriter, context string) {
 	}
 	defer c.Close()
 
+	// authenticate the connection using the password parsed from the file
 	_, err = c.Do("AUTH", pw)
 	if err != nil {
 		log.Printf("%s: Stats() Authenticating to db failed, using %s", host, pw)
@@ -191,6 +193,7 @@ func init() {
 	if err != nil {
 		log.Printf("%s: Could not read password for redis from file", host)
 	} else {
+		// authenticate the connection using the password parsed from the file
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
 			log.Printf("%s: Init() Authenticating to db failed, using %s", host, pw)
@@ -226,6 +229,7 @@ func main() {
 		}
 		defer c.Close()
 
+		// authenticate the connection using the password parsed from the file
 		_, err = c.Do("AUTH", pw)
 		if err != nil {
 			log.Printf("Authenticating to db failed, using %s", pw)
@@ -284,6 +288,7 @@ func cleanup() {
 	}
 	defer c.Close()
 
+	// authenticate the connection using the password parsed from the file
 	_, err = c.Do("AUTH", pw)
 	if err != nil {
 		log.Printf("%s: Cleanup() Authenticating to db failed, using %s", host, pw)
