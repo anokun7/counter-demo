@@ -60,6 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		terminated, _ := redis.Int(c.Do("EXISTS", "~"+host))
 		if terminated != 1 {
 			c.Do("INCR", host)
+			c.Do("PERSIST", host)
 		}
 	}
 	stats(w, "incr")
@@ -171,6 +172,8 @@ func init() {
 
 	// INCR the value corresponding to the host key
 	c.Do("SETNX", host, 0)
+	// Auto cleanup if unused
+	c.Do("EXPIRE", host, 60)
 }
 
 func main() {
