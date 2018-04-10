@@ -1,0 +1,42 @@
+version: "3.2"
+
+services:
+  web:
+    image: ${dockerid:-anoop}/webserver:${webserver-version:-latest}
+    environment:
+      app_url: app:8080
+    deploy:
+      replicas: 2
+      labels:
+        com.docker.lb.hosts: app.noop.ga
+        com.docker.lb.port: 2015
+        com.docker.lb.websocket_endpoints: /total
+    networks:
+      - frontend
+ 
+  app:
+    image: ${dockerid:-anoop}/counter-demo:${version:-latest}
+    environment:
+      ENVIRONMENT: ${env:-PRODUCTION}
+    deploy:
+      replicas: 5
+      endpoint_mode: dnsrr
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: redis:${redis-version:-latest}
+    volumes:
+      - data:/data
+    networks:
+      backend:
+
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+
+volumes:
+  data:
