@@ -63,13 +63,23 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			c.Do("PERSIST", host)
 		}
 	}
-	stats(w, "incr")
+	stats(r, w, "incr")
 }
 
-func stats(w http.ResponseWriter, context string) {
+func stats(r *http.Request, w http.ResponseWriter, context string) {
 	// A pseudo variable to denote env specific variations
 	env := os.Getenv("ENVIRONMENT")
 	rotate := rand.Intn(180)
+
+	// Get client details
+	client := r.RemoteAddr
+
+	// Get the X-Forwarded-For IP's. Will work only when site is accessed via non-anonymous proxy
+	for _, ip := range strings.Split(r.Header.Get("X-Forwarded-For"), ", ") {
+		log.Printf("Access: %s -> %s\n", ip, r.RemoteAddr)
+	}
+
+	proxyips := r.Header.Get("X-Forwarded-For")
 
 	// connect to redis.
 	c, err := redis.Dial("tcp", dbURL)
@@ -117,10 +127,11 @@ func stats(w http.ResponseWriter, context string) {
 		CurrentHost, Env string
 		Rotate           int
 		Hits             []Hit
-		Context          string
+		Context, Client  string
 		Total            int
+		ProxyIps         string
 	}{
-		host, env, rotate, hits, context, total,
+		host, env, rotate, hits, context, client, total, proxyips,
 	}
 
 	// Template stuff, with error handling (critical for troubleshooting)
@@ -140,7 +151,7 @@ func stats(w http.ResponseWriter, context string) {
 func viewer(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/stats" {
 		// log.Println("Viewing stats....")
-		stats(w, "viewer")
+		stats(r, w, "viewer")
 	}
 }
 

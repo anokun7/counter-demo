@@ -42,6 +42,7 @@ table.pCounted tr td.slno:before, table.pCounted tr td.slno::before { counter-in
   </head>
   <body onload="javascript:showTotalInBanner();">
     <p>Hi there, from <b>{{ .CurrentHost }}</b>!
+    <p>Source of request: <ul><li>Web Server: <b>{{ .Client }}</b>.</li><li> Proxy(s): {{ .ProxyIps }}.</li></ul></p>
     {{ if eq .Context "viewer" }}
     <span> Note: This page shows stats and does not increment counts.</span></p>
     To increment the counters, go to the <a href="/">Demo</a> page.
