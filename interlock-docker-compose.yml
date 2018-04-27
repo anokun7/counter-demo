@@ -8,7 +8,7 @@ services:
     deploy:
       replicas: 2
       labels:
-        com.docker.lb.hosts: app.noop.ga
+        com.docker.lb.hosts: ${DOMAIN:-app.noop.ga}
         com.docker.lb.port: 2015
         com.docker.lb.websocket_endpoints: /total
     networks:
