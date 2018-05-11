@@ -1,23 +1,19 @@
-version: "3.2"
+version: "3.3"
 
 services:
   web:
-    image: ${dockerid:-anoop}/webserver:${webserver-version:-latest}
+    image: dockersuccess/webserver:latest
     environment:
       app_url: app:8080
     deploy:
       replicas: 5
-#     labels:
-#       com.docker.ucp.mesh.http: "external_route=http://app.noop.ga,internal_port=2015"
     ports:
-      - "2015"
+      - "2015:2015"
     networks:
       - frontend
-#     - ucp-hrm
  
   app:
-    image: ${dockerid:-anoop}/counter-demo:${version:-latest}
-#   hostname: ${stackname:-app}-{{.Task.Slot}}
+    image: dockersuccess/counter-demo:latest
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
     deploy:
@@ -28,15 +24,13 @@ services:
       - backend
 
   db:
-    image: redis:${redis-version:-latest}
+    image: redis:latest
     volumes:
       - data:/data
     networks:
       backend:
 
 networks:
-# ucp-hrm:
-#   external: true
   frontend:
     driver: overlay
   backend:
