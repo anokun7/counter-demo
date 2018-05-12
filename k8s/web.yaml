@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+  namespace: noop
+  labels:
+    app: counter-demo
+spec:
+  ports:
+    - port: 2015
+  selector:
+    app: counter-demo
+    tier: web
+  type: NodePort
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: counter-demo
+spec:
+  selector:
+    matchLabels:
+      app: counter-demo
+      tier: web
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: counter-demo
+        tier: web
+    spec:
+      containers:
+      - image: anoop/caddy:latest
+        name: counter-demo
+        env:
+        - name: app_url
+          value: "app:8080"
+        ports:
+        - containerPort: 2015
+          name: counter-demo

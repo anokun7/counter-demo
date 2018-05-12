@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: saat-ingress
+  namespace: noop
+spec:
+  rules:
+  - host: saat.noop.ga
+    http:
+      paths:
+      - backend:
+          serviceName: web
+          servicePort: 2015
