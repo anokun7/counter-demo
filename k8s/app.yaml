@@ -8,7 +8,6 @@ metadata:
 spec:
   ports:
     - port: 8080
-  type: NodePort
   selector:
     app: counter-demo
     tier: app
