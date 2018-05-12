@@ -20,6 +20,7 @@ metadata:
   labels:
     app: counter-demo
 spec:
+  replicas: 10
   selector:
     matchLabels:
       app: counter-demo
