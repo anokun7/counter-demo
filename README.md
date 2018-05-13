@@ -6,7 +6,7 @@ A very simple Go-Redis app to demonstrate efficient image building processes & d
 If you want to skip everything and just run this app on your own infrastructure, including docker-for-mac, virtual machines, aws, azure etc, and look at the results, follow the steps below:
 
 ```
-git clone https://github.com/dockersuccess/counter-demo.git
+git clone https://github.com/anokun7/counter-demo.git
 cd counter-demo/test
 dockerid=<your dockerid> ./run.sh
 ```
