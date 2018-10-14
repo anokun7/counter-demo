@@ -44,7 +44,7 @@ func (h ByHost) Less(i, j int) bool { return h[i].Host < h[j].Host && h[i].Activ
 func handler(w http.ResponseWriter, r *http.Request) {
 	// Increment only for requests for URL's "/" because chrome
 	// seems to make multiple requests for whatever reason
-	if r.URL.Path == "/" {
+	if r.URL.Path == "/counter/" {
 		//log.Println("Incrementing counter...")
 
 		// connect to redis. The redis db host should be reachable as "db"
@@ -149,7 +149,7 @@ func stats(r *http.Request, w http.ResponseWriter, context string) {
 }
 
 func viewer(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/stats" {
+	if r.URL.Path == "/counter/stats" {
 		// log.Println("Viewing stats....")
 		stats(r, w, "viewer")
 	}
@@ -194,7 +194,7 @@ func main() {
 	// go routine to watch for signals, for graceful shutdown
 	go shutdown(signalChannel, exitChannel)
 
-	http.HandleFunc("/total", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/counter/total", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s: Websocket launched\n", host)
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -225,8 +225,8 @@ func main() {
 			}
 		}
 	})
-	http.HandleFunc("/stats", viewer)
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/counter/stats", viewer)
+	http.HandleFunc("/counter/", handler)
 	server := &http.Server{
 		Addr: ":8080",
 	}

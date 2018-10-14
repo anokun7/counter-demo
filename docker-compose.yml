@@ -2,29 +2,29 @@ version: "3.3"
 
 services:
   web:
-    image: dockersuccess/webserver:latest
+    image: ${dockerid:-anoop}/webserver:${webserver_version:-latest}
     environment:
       app_url: app:8080
     deploy:
-      replicas: 5
+      replicas: 1
     ports:
       - "2015:2015"
     networks:
       - frontend
  
   app:
-    image: dockersuccess/counter-demo:latest
+    image: ${dockerid:-anoop}/counter-demo:${version:-onbuild}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
     deploy:
-      replicas: 10
+      replicas: 1
       endpoint_mode: dnsrr
     networks:
       - frontend
       - backend
 
   db:
-    image: redis:latest
+    image: redis:${redis_version:-latest}
     volumes:
       - data:/data
     networks:
