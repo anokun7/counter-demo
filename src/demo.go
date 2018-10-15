@@ -41,9 +41,16 @@ func (h ByHost) Len() int           { return len(h) }
 func (h ByHost) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h ByHost) Less(i, j int) bool { return h[i].Host < h[j].Host && h[i].Active < h[j].Active }
 
+func redirecter(w http.ResponseWriter, r *http.Request) {
+	// Redirect to /counter for requests for "/"
+	if r.URL.Path == "/" || r.URL.Path == "" {
+		//log.Println("Redirecting to /counter/")
+		http.Redirect(w, r, "/counter/", http.StatusPermanentRedirect)
+	}
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
-	// Increment only for requests for URL's "/" because chrome
-	// seems to make multiple requests for whatever reason
+	// The path where the application is being served
 	if r.URL.Path == "/counter/" {
 		//log.Println("Incrementing counter...")
 
@@ -227,6 +234,7 @@ func main() {
 	})
 	http.HandleFunc("/counter/stats", viewer)
 	http.HandleFunc("/counter/", handler)
+	http.HandleFunc("/", redirecter)
 	server := &http.Server{
 		Addr: ":8080",
 	}
