@@ -1,0 +1,52 @@
+version: "3.3"
+
+services:
+  web:
+    image: ${dockerid:-anoop}/webserver:${webserver_version:-latest}
+    environment:
+      app_url: app:8080
+    deploy:
+      replicas: 1
+    ports:
+      - "2015:2015"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://logs.noop.ga:12201"
+    networks:
+      - frontend
+ 
+  app:
+    image: ${dockerid:-anoop}/counter-demo:${version:-onbuild}
+    environment:
+      ENVIRONMENT: ${env:-PRODUCTION}
+    deploy:
+      replicas: 1
+      endpoint_mode: dnsrr
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logs.noop.ga:10514"
+    networks:
+      - frontend
+      - backend
+
+  db:
+    image: redis:${redis_version:-latest}
+    volumes:
+      - data:/data
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logs.noop.ga:10514"
+    networks:
+      backend:
+
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+
+volumes:
+  data:
