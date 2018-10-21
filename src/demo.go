@@ -30,6 +30,7 @@ type Hit struct {
 
 // global string to hold container's hostname
 var host string
+var contextpath string
 
 // global const string to hold Database URL
 const dbURL = "db:6379"
@@ -44,14 +45,14 @@ func (h ByHost) Less(i, j int) bool { return h[i].Host < h[j].Host && h[i].Activ
 func redirecter(w http.ResponseWriter, r *http.Request) {
 	// Redirect to /counter for requests for "/"
 	if r.URL.Path == "/" || r.URL.Path == "" {
-		//log.Println("Redirecting to /counter/")
-		http.Redirect(w, r, "/counter/", http.StatusPermanentRedirect)
+		//log.Println("Redirecting to /"+contextpath+"/")
+		http.Redirect(w, r, "/"+contextpath+"/", http.StatusPermanentRedirect)
 	}
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	// The path where the application is being served
-	if r.URL.Path == "/counter/" {
+	if r.URL.Path == "/"+contextpath+"/" {
 		//log.Println("Incrementing counter...")
 
 		// connect to redis. The redis db host should be reachable as "db"
@@ -137,8 +138,9 @@ func stats(r *http.Request, w http.ResponseWriter, context string) {
 		Context, Client  string
 		Total            int
 		ProxyIps         string
+		ContextPath      string
 	}{
-		host, env, rotate, hits, context, client, total, proxyips,
+		host, env, rotate, hits, context, client, total, proxyips, contextpath,
 	}
 
 	// Template stuff, with error handling (critical for troubleshooting)
@@ -156,7 +158,7 @@ func stats(r *http.Request, w http.ResponseWriter, context string) {
 }
 
 func viewer(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/counter/stats" {
+	if r.URL.Path == "/"+contextpath+"/stats" {
 		// log.Println("Viewing stats....")
 		stats(r, w, "viewer")
 	}
@@ -201,7 +203,9 @@ func main() {
 	// go routine to watch for signals, for graceful shutdown
 	go shutdown(signalChannel, exitChannel)
 
-	http.HandleFunc("/counter/total", func(w http.ResponseWriter, r *http.Request) {
+	contextpath = os.Getenv("CONTEXT")
+
+	http.HandleFunc("/"+contextpath+"/total", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s: Websocket launched\n", host)
 		conn, err := upgrader.Upgrade(w, r, nil)
 		if err != nil {
@@ -232,8 +236,8 @@ func main() {
 			}
 		}
 	})
-	http.HandleFunc("/counter/stats", viewer)
-	http.HandleFunc("/counter/", handler)
+	http.HandleFunc("/"+contextpath+"/stats", viewer)
+	http.HandleFunc("/"+contextpath+"/", handler)
 	http.HandleFunc("/", redirecter)
 	server := &http.Server{
 		Addr: ":8080",

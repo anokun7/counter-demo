@@ -2,7 +2,7 @@
   <head>
     <script type="text/javascript">
 function showTotalInBanner() {
-  var ws = new WebSocket("ws://" + location.host + "/counter/total");
+  var ws = new WebSocket("ws://" + location.host + "/" + {{ .ContextPath }} + "/total");
   ws.onopen = function () {
     console.log("Opened Websocket connection");
   };
@@ -45,10 +45,10 @@ table.pCounted tr td.slno:before, table.pCounted tr td.slno::before { counter-in
     <p>Source of request: <ul><li>Web Server: <b>{{ .Client }}</b>.</li><li> Proxy(s): {{ .ProxyIps }}.</li></ul></p>
     {{ if eq .Context "viewer" }}
     <span> Note: This page shows stats and does not increment counts.</span></p>
-    To increment the counters, go to the <a href="/counter/">Demo</a> page.
+    To increment the counters, go to the <a href="/{{ .ContextPath }}/">Demo</a> page.
     {{ else }}
     </p><div class="refresh"><a href=".">Increment counter (Refresh)</a></div>
-    To view stats, go to the <a href="/counter/stats">Stats</a> page.
+    To view stats, go to the <a href="/{{ .ContextPath }}/stats">Stats</a> page.
     {{ end }}
     <div id="totalInBanner">Calculating...</div>
     <div id="container">
