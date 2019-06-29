@@ -9,6 +9,10 @@ services:
       replicas: 1
     ports:
       - "2015:2015"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://logs.noop.ga:12201"
     networks:
       - frontend
  
@@ -16,10 +20,13 @@ services:
     image: ${dockerid:-anoop}/counter-demo:${version:-onbuild}
     environment:
       ENVIRONMENT: ${env:-PRODUCTION}
-      CONTEXT: ${context:-nikki}
     deploy:
       replicas: 1
       endpoint_mode: dnsrr
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logs.noop.ga:10514"
     networks:
       - frontend
       - backend
@@ -28,6 +35,10 @@ services:
     image: redis:${redis_version:-latest}
     volumes:
       - data:/data
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://logs.noop.ga:10514"
     networks:
       backend:
 
