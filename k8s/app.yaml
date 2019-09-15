@@ -37,6 +37,8 @@ spec:
         env:
         - name: ENVIRONMENT
           value: Kubernetes
+        - name: CONTEXT
+          value: demo
         ports:
         - containerPort: 8080
           name: counter-demo
