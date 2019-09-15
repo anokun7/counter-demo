@@ -1,6 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
   name: saat-ingress
 spec:
   rules:
@@ -10,3 +13,8 @@ spec:
       - backend:
           serviceName: web
           servicePort: 2015
+        path: /demo
+      - backend:
+          serviceName: app
+          servicePort: 8080
+        path: /demo/total
