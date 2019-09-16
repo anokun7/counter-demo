@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: db
   labels:
-    app: redis
+    app: counter-demo
 spec:
   ports:
     - port: 6379
